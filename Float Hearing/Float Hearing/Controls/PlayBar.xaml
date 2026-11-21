@@ -52,19 +52,19 @@
                     x:Name="BtnPrevious"
                     AutomationProperties.Name="{x:Bind PreviousLabel, Mode=OneTime}"
                     Click="BtnPrevious_Click">
-                    <FontIcon FontSize="16" Glyph="&#xE768;" />
+                    <FontIcon FontSize="16" Glyph="&#xF8AC;" />
                 </Button>
                 <Button
                     x:Name="BtnPlayPause"
                     AutomationProperties.Name="{x:Bind PlayPauseLabel, Mode=OneTime}"
                     Click="BtnPlayPause_Click">
-                    <FontIcon x:Name="GlyphPlayPause" FontSize="16" Glyph="&#xE768;" />
+                    <FontIcon x:Name="GlyphPlayPause" FontSize="16" Glyph="&#xF5B0;" />
                 </Button>
                 <Button
                     x:Name="BtnNext"
                     AutomationProperties.Name="{x:Bind NextLabel, Mode=OneTime}"
                     Click="BtnNext_Click">
-                    <FontIcon FontSize="16" Glyph="&#xE769;" />
+                    <FontIcon FontSize="16" Glyph="&#xF8AD;" />
                 </Button>
             </StackPanel>
         </Grid>
