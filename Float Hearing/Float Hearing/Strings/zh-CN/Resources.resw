@@ -231,4 +231,7 @@
   <data name="PlaylistNewPrefix" xml:space="preserve">
     <value>歌单</value>
   </data>
+  <data name="MusicLibraryRefresh" xml:space="preserve">
+    <value>刷新音乐库</value>
+  </data>
 </root>

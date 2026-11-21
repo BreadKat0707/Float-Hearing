@@ -21,7 +21,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- 内置 TitleBar：返回/折叠为系统样式（无按钮底、带按压动效），对齐 WinUI Gallery -->
+        <!-- 内置 TitleBar：返回/折叠为默认样式-->
         <TitleBar
             x:Name="AppTitleBar"
             Grid.Row="0"
@@ -33,35 +33,64 @@
             <TitleBar.IconSource>
                 <ImageIconSource ImageSource="ms-appx:///AppIcon.ico" />
             </TitleBar.IconSource>
+            <!-- 右侧命令区：紧贴三大金刚（caption）；紧凑图标按钮 -->
             <StackPanel
                 Orientation="Horizontal"
-                Spacing="4"
+                Spacing="0"
                 HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                Margin="0,0,8,0">
-                <!-- 右侧三枚：仅图标 + 悬浮提示（有按钮背景与按压反馈） -->
+                VerticalAlignment="Stretch"
+                Margin="0,0,0,0">
+                <!-- 音乐库 → 刷新 → 计划暂停 → 设置；仅图标 + ToolTip -->
                 <AppBarButton
                     x:Name="BtnMusicLibrary"
+                    Width="40"
+                    Height="48"
+                    Padding="0"
+                    MinWidth="40"
+                    MaxWidth="40"
                     Click="BtnMusicLibrary_Click"
                     ToolTipService.ToolTip="{x:Bind NavMusicLibrary, Mode=OneTime}">
                     <AppBarButton.Icon>
-                        <FontIcon Glyph="&#xE8B7;" />
+                        <FontIcon FontSize="14" Glyph="&#xE8B7;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton
+                    x:Name="BtnRefreshLibrary"
+                    Width="40"
+                    Height="48"
+                    Padding="0"
+                    MinWidth="40"
+                    MaxWidth="40"
+                    Click="BtnRefreshLibrary_Click"
+                    ToolTipService.ToolTip="{x:Bind NavMusicRefresh, Mode=OneTime}">
+                    <AppBarButton.Icon>
+                        <FontIcon FontSize="14" Glyph="&#xE72C;" />
                     </AppBarButton.Icon>
                 </AppBarButton>
                 <AppBarButton
                     x:Name="BtnSleepTimer"
+                    Width="40"
+                    Height="48"
+                    Padding="0"
+                    MinWidth="40"
+                    MaxWidth="40"
                     Click="BtnSleepTimer_Click"
                     ToolTipService.ToolTip="{x:Bind NavSleepTimer, Mode=OneTime}">
                     <AppBarButton.Icon>
-                        <FontIcon Glyph="&#xE823;" />
+                        <FontIcon FontSize="14" Glyph="&#xE823;" />
                     </AppBarButton.Icon>
                 </AppBarButton>
                 <AppBarButton
                     x:Name="BtnSettings"
+                    Width="40"
+                    Height="48"
+                    Padding="0"
+                    MinWidth="40"
+                    MaxWidth="40"
                     Click="BtnSettings_Click"
                     ToolTipService.ToolTip="{x:Bind NavSettings, Mode=OneTime}">
                     <AppBarButton.Icon>
-                        <FontIcon Glyph="&#xE713;" />
+                        <FontIcon FontSize="14" Glyph="&#xE713;" />
                     </AppBarButton.Icon>
                 </AppBarButton>
             </StackPanel>
@@ -96,7 +125,7 @@
                 </NavigationViewItem>
                 <NavigationViewItem Content="{x:Bind NavAlbums, Mode=OneTime}" Tag="Albums">
                     <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE8B9;" />
+                        <FontIcon Glyph="&#xE93C;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem Content="{x:Bind NavArtists, Mode=OneTime}" Tag="Artists">
@@ -106,7 +135,7 @@
                 </NavigationViewItem>
                 <NavigationViewItem Content="{x:Bind NavGenres, Mode=OneTime}" Tag="Genres">
                     <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE8CB;" />
+                        <FontIcon Glyph="&#xEC4F;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
                 <NavigationViewItem Content="{x:Bind NavFolders, Mode=OneTime}" Tag="Folders">
@@ -116,7 +145,7 @@
                 </NavigationViewItem>
                 <NavigationViewItem Content="{x:Bind NavPlaylists, Mode=OneTime}" Tag="Playlists">
                     <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE8FD;" />
+                        <FontIcon Glyph="&#xE90B;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
@@ -129,7 +158,7 @@
                 </NavigationViewItem>
                 <NavigationViewItem Content="{x:Bind NavStats, Mode=OneTime}" Tag="Stats">
                     <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE9D9;" />
+                        <FontIcon Glyph="&#xEAFC;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 
@@ -137,7 +166,7 @@
 
                 <NavigationViewItem Content="{x:Bind NavIdeas, Mode=OneTime}" Tag="Ideas">
                     <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE70B;" />
+                        <FontIcon Glyph="&#xEA80;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.MenuItems>

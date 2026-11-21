@@ -34,6 +34,7 @@ public sealed partial class MainWindow : Window
         NavSleepTimer = Loc.Get("NavSleepTimer");
         NavSettings = Loc.Get("NavSettings");
         NavMusicLibrary = Loc.Get("MusicLibraryTitle");
+        NavMusicRefresh = Loc.Get("MusicLibraryRefresh");
 
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(AppTitleBar);
@@ -62,6 +63,7 @@ public sealed partial class MainWindow : Window
     public string NavSleepTimer { get; }
     public string NavSettings { get; }
     public string NavMusicLibrary { get; }
+    public string NavMusicRefresh { get; }
 
     private bool _navInitialized;
 
@@ -95,6 +97,11 @@ public sealed partial class MainWindow : Window
         }
 
         await MusicLibraryDialog.ShowAsync(ContentFrame.XamlRoot);
+    }
+
+    private void BtnRefreshLibrary_Click(object sender, RoutedEventArgs e)
+    {
+        // 刷新媒体库：扫描就绪后接 LibraryScanner
     }
 
     private async void BtnSleepTimer_Click(object sender, RoutedEventArgs e)
