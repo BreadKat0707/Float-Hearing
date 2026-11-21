@@ -123,4 +123,25 @@
   <data name="NavPlaylists" xml:space="preserve">
     <value>歌單</value>
   </data>
+  <data name="SleepTimerConfirm" xml:space="preserve">
+    <value>確定</value>
+  </data>
+  <data name="SleepTimerEndOfTrack" xml:space="preserve">
+    <value>播完目前歌曲</value>
+  </data>
+  <data name="SleepTimerDurationLabel" xml:space="preserve">
+    <value>時長</value>
+  </data>
+  <data name="SleepTimerCancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="SleepTimer30" xml:space="preserve">
+    <value>30 分鐘</value>
+  </data>
+  <data name="SleepTimer60" xml:space="preserve">
+    <value>60 分鐘</value>
+  </data>
+  <data name="SleepTimer15" xml:space="preserve">
+    <value>15 分鐘</value>
+  </data>
 </root>

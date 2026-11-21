@@ -1,3 +1,4 @@
+using Float_Hearing.Dialogs;
 using Float_Hearing.Pages;
 using Float_Hearing.Services;
 using Microsoft.UI.Windowing;
@@ -8,11 +9,13 @@ using Microsoft.UI.Xaml.Navigation;
 namespace Float_Hearing;
 
 /// <summary>
-/// 主窗口：Tall 自定义标题栏 + NavigationView 侧栏 + 底部 PlayBar。
-/// 返回 / 导航折叠在标题栏；IsBackButtonVisible / IsPaneToggleButtonVisible 由标题栏按钮承担。
+/// 主窗口：内置 TitleBar（返回/折叠系统样式）+ NavigationView 侧栏 + 底部 PlayBar。
+/// 计划暂停=ContentDialog；设置=独立 SettingsWindow。
 /// </summary>
 public sealed partial class MainWindow : Window
 {
+    private SettingsWindow? _settingsWindow;
+
     public MainWindow()
     {
         InitializeComponent();
@@ -68,9 +71,40 @@ public sealed partial class MainWindow : Window
         }
 
         _navInitialized = true;
-        // 默认歌曲页
         ContentFrame.Navigate(typeof(SongsPage));
         UpdateBackButton();
+    }
+
+    private void AppTitleBar_BackRequested(TitleBar sender, object args)
+    {
+        GoBack();
+    }
+
+    private void AppTitleBar_PaneToggleRequested(TitleBar sender, object args)
+    {
+        RootNav.IsPaneOpen = !RootNav.IsPaneOpen;
+    }
+
+    private async void BtnSleepTimer_Click(object sender, RoutedEventArgs e)
+    {
+        if (ContentFrame.XamlRoot is null)
+        {
+            return;
+        }
+
+        await SleepTimerDialog.ShowAsync(ContentFrame.XamlRoot);
+    }
+
+    private void BtnSettings_Click(object sender, RoutedEventArgs e)
+    {
+        if (_settingsWindow is null)
+        {
+            _settingsWindow = new SettingsWindow();
+            _settingsWindow.Closed += (_, _) => _settingsWindow = null;
+        }
+
+        _settingsWindow.Activate();
+        _settingsWindow.AppWindow?.MoveInZOrderAtTop();
     }
 
     private void RootNav_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
@@ -91,8 +125,6 @@ public sealed partial class MainWindow : Window
             "Recent" => typeof(RecentPage),
             "Stats" => typeof(StatsPage),
             "Ideas" => typeof(IdeasPage),
-            "SleepTimer" => typeof(SleepTimerPage),
-            "Settings" => typeof(SettingsPage),
             _ => null,
         };
 
@@ -125,15 +157,6 @@ public sealed partial class MainWindow : Window
                 return;
             }
         }
-
-        foreach (var raw in RootNav.FooterMenuItems)
-        {
-            if (raw is NavigationViewItem item && MatchPage(item, pageType))
-            {
-                RootNav.SelectedItem = item;
-                return;
-            }
-        }
     }
 
     private static bool MatchPage(NavigationViewItem item, Type pageType) => item.Tag switch
@@ -147,12 +170,8 @@ public sealed partial class MainWindow : Window
         "Recent" => pageType == typeof(RecentPage),
         "Stats" => pageType == typeof(StatsPage),
         "Ideas" => pageType == typeof(IdeasPage),
-        "SleepTimer" => pageType == typeof(SleepTimerPage),
-        "Settings" => pageType == typeof(SettingsPage),
         _ => false,
     };
-
-    private void BtnBack_Click(object sender, RoutedEventArgs e) => GoBack();
 
     private void GoBack()
     {
@@ -162,26 +181,10 @@ public sealed partial class MainWindow : Window
         }
     }
 
-    private void BtnTogglePane_Click(object sender, RoutedEventArgs e)
-    {
-        RootNav.IsPaneOpen = !RootNav.IsPaneOpen;
-    }
-
     private void UpdateBackButton()
     {
-        BtnBack.IsEnabled = ContentFrame.CanGoBack;
-        BtnBack.Opacity = ContentFrame.CanGoBack ? 1.0 : 0.4;
-    }
-
-    /// <summary>标题栏高度同步（Tall）。</summary>
-    private void SyncTitleBarHeight()
-    {
-        if (AppWindow is null)
-        {
-            return;
-        }
-
-        AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
-        AppTitleBar.Height = 48;
+        // TitleBar 内置返回按钮可用性：无历史时禁用
+        AppTitleBar.IsBackButtonVisible = true;
+        // TitleBar 不直接暴露 IsEnabled 给 back；无历史时仍显示但点击无操作（与 Gallery 一致）
     }
 }

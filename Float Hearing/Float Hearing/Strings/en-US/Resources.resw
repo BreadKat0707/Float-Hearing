@@ -168,4 +168,25 @@
   <data name="NavPlaylists" xml:space="preserve">
     <value>Playlists</value>
   </data>
+  <data name="SleepTimerConfirm" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="SleepTimerEndOfTrack" xml:space="preserve">
+    <value>End of current track</value>
+  </data>
+  <data name="SleepTimerDurationLabel" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="SleepTimerCancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="SleepTimer30" xml:space="preserve">
+    <value>30 minutes</value>
+  </data>
+  <data name="SleepTimer60" xml:space="preserve">
+    <value>60 minutes</value>
+  </data>
+  <data name="SleepTimer15" xml:space="preserve">
+    <value>15 minutes</value>
+  </data>
 </root>

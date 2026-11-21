@@ -21,56 +21,40 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <!-- 自定义 Tall 标题栏：返回 → 导航展开 → 图标+标题 -->
-        <Grid
+        <!-- 内置 TitleBar：返回/折叠为系统样式（无按钮底、带按压动效），对齐 WinUI Gallery -->
+        <TitleBar
             x:Name="AppTitleBar"
             Grid.Row="0"
-            Height="48"
-            Padding="0,0,0,0"
-            ColumnSpacing="4">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-
-            <Button
-                x:Name="BtnBack"
-                Grid.Column="0"
-                Width="40"
-                Height="40"
-                Margin="8,0,0,0"
-                VerticalAlignment="Center"
-                Click="BtnBack_Click">
-                <FontIcon FontSize="14" Glyph="&#xE72B;" />
-            </Button>
-
-            <Button
-                x:Name="BtnTogglePane"
-                Grid.Column="1"
-                Width="40"
-                Height="40"
-                VerticalAlignment="Center"
-                Click="BtnTogglePane_Click">
-                <FontIcon FontSize="14" Glyph="&#xE700;" />
-            </Button>
-
+            Title="{x:Bind AppTitle, Mode=OneTime}"
+            IsBackButtonVisible="True"
+            IsPaneToggleButtonVisible="True"
+            BackRequested="AppTitleBar_BackRequested"
+            PaneToggleRequested="AppTitleBar_PaneToggleRequested">
             <StackPanel
-                Grid.Column="2"
-                Margin="8,0,0,0"
                 Orientation="Horizontal"
-                Spacing="8"
-                VerticalAlignment="Center">
-                <Image
-                    Width="20"
-                    Height="20"
-                    Source="ms-appx:///AppIcon.ico" />
-                <TextBlock
-                    VerticalAlignment="Center"
-                    Style="{StaticResource BodyStrongTextBlockStyle}"
-                    Text="{x:Bind AppTitle, Mode=OneTime}" />
+                Spacing="4"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Margin="0,0,8,0">
+                <!-- 计划暂停 / 设置：标题栏上的命令按钮（有背景与按压反馈） -->
+                <AppBarButton
+                    x:Name="BtnSleepTimer"
+                    Label="{x:Bind NavSleepTimer, Mode=OneTime}"
+                    Click="BtnSleepTimer_Click">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE823;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
+                <AppBarButton
+                    x:Name="BtnSettings"
+                    Label="{x:Bind NavSettings, Mode=OneTime}"
+                    Click="BtnSettings_Click">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE713;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
             </StackPanel>
-        </Grid>
+        </TitleBar>
 
         <!-- 主内容：NavigationView + 页框 -->
         <NavigationView
@@ -146,19 +130,6 @@
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
             </NavigationView.MenuItems>
-
-            <NavigationView.FooterMenuItems>
-                <NavigationViewItem Content="{x:Bind NavSleepTimer, Mode=OneTime}" Tag="SleepTimer">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE823;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="{x:Bind NavSettings, Mode=OneTime}" Tag="Settings">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE713;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-            </NavigationView.FooterMenuItems>
 
             <Frame
                 x:Name="ContentFrame"

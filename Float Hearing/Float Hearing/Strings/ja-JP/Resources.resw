@@ -123,4 +123,25 @@
   <data name="NavPlaylists" xml:space="preserve">
     <value>プレイリスト</value>
   </data>
+  <data name="SleepTimerConfirm" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="SleepTimerEndOfTrack" xml:space="preserve">
+    <value>曲が終わったら</value>
+  </data>
+  <data name="SleepTimerDurationLabel" xml:space="preserve">
+    <value>期間</value>
+  </data>
+  <data name="SleepTimerCancel" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="SleepTimer30" xml:space="preserve">
+    <value>30分</value>
+  </data>
+  <data name="SleepTimer60" xml:space="preserve">
+    <value>60分</value>
+  </data>
+  <data name="SleepTimer15" xml:space="preserve">
+    <value>15分</value>
+  </data>
 </root>
