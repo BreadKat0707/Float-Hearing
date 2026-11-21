@@ -144,4 +144,46 @@
   <data name="SleepTimer15" xml:space="preserve">
     <value>15분</value>
   </data>
+  <data name="MusicLibraryTitle" xml:space="preserve">
+    <value>음악 보관함</value>
+  </data>
+  <data name="PlaylistEmpty" xml:space="preserve">
+    <value>재생목록이 없습니다</value>
+  </data>
+  <data name="PlaylistMenuDelete" xml:space="preserve">
+    <value>삭제</value>
+  </data>
+  <data name="PlaylistDemoFavorites" xml:space="preserve">
+    <value>즐겨찾기</value>
+  </data>
+  <data name="MusicLibraryDescription" xml:space="preserve">
+    <value>스캔할 음악 폴더를 선택하면 로컬 보관함이 만들어집니다.</value>
+  </data>
+  <data name="PlaylistMenuPlay" xml:space="preserve">
+    <value>재생</value>
+  </data>
+  <data name="PlaylistDemoRoad" xml:space="preserve">
+    <value>드라이브</value>
+  </data>
+  <data name="PlaylistMenuRename" xml:space="preserve">
+    <value>이름 바꾸기</value>
+  </data>
+  <data name="MusicLibraryComingSoon" xml:space="preserve">
+    <value>스캔 기능은 추후 제공</value>
+  </data>
+  <data name="PlaylistDemoSleep" xml:space="preserve">
+    <value>수면</value>
+  </data>
+  <data name="MusicLibraryPickFolder" xml:space="preserve">
+    <value>폴더 선택</value>
+  </data>
+  <data name="PlaylistAdd" xml:space="preserve">
+    <value>새 재생목록</value>
+  </data>
+  <data name="PlaylistDemoFocus" xml:space="preserve">
+    <value>집중</value>
+  </data>
+  <data name="PlaylistNewPrefix" xml:space="preserve">
+    <value>재생목록</value>
+  </data>
 </root>

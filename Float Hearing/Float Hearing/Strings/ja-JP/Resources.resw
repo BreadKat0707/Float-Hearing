@@ -144,4 +144,46 @@
   <data name="SleepTimer15" xml:space="preserve">
     <value>15分</value>
   </data>
+  <data name="MusicLibraryTitle" xml:space="preserve">
+    <value>ミュージックライブラリ</value>
+  </data>
+  <data name="PlaylistEmpty" xml:space="preserve">
+    <value>プレイリストがありません</value>
+  </data>
+  <data name="PlaylistMenuDelete" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="PlaylistDemoFavorites" xml:space="preserve">
+    <value>お気に入り</value>
+  </data>
+  <data name="MusicLibraryDescription" xml:space="preserve">
+    <value>スキャンするミュージックフォルダを選択すると、ローカルライブラリが作成されます。</value>
+  </data>
+  <data name="PlaylistMenuPlay" xml:space="preserve">
+    <value>再生</value>
+  </data>
+  <data name="PlaylistDemoRoad" xml:space="preserve">
+    <value>ロード</value>
+  </data>
+  <data name="PlaylistMenuRename" xml:space="preserve">
+    <value>名前の変更</value>
+  </data>
+  <data name="MusicLibraryComingSoon" xml:space="preserve">
+    <value>スキャンは後で対応</value>
+  </data>
+  <data name="PlaylistDemoSleep" xml:space="preserve">
+    <value>スリープ</value>
+  </data>
+  <data name="MusicLibraryPickFolder" xml:space="preserve">
+    <value>フォルダを選択</value>
+  </data>
+  <data name="PlaylistAdd" xml:space="preserve">
+    <value>新規プレイリスト</value>
+  </data>
+  <data name="PlaylistDemoFocus" xml:space="preserve">
+    <value>フォーカス</value>
+  </data>
+  <data name="PlaylistNewPrefix" xml:space="preserve">
+    <value>プレイリスト</value>
+  </data>
 </root>

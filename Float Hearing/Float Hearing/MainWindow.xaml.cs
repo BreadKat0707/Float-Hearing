@@ -33,6 +33,7 @@ public sealed partial class MainWindow : Window
         NavIdeas = Loc.Get("NavIdeas");
         NavSleepTimer = Loc.Get("NavSleepTimer");
         NavSettings = Loc.Get("NavSettings");
+        NavMusicLibrary = Loc.Get("MusicLibraryTitle");
 
         ExtendsContentIntoTitleBar = true;
         SetTitleBar(AppTitleBar);
@@ -60,6 +61,7 @@ public sealed partial class MainWindow : Window
     public string NavIdeas { get; }
     public string NavSleepTimer { get; }
     public string NavSettings { get; }
+    public string NavMusicLibrary { get; }
 
     private bool _navInitialized;
 
@@ -83,6 +85,16 @@ public sealed partial class MainWindow : Window
     private void AppTitleBar_PaneToggleRequested(TitleBar sender, object args)
     {
         RootNav.IsPaneOpen = !RootNav.IsPaneOpen;
+    }
+
+    private async void BtnMusicLibrary_Click(object sender, RoutedEventArgs e)
+    {
+        if (ContentFrame.XamlRoot is null)
+        {
+            return;
+        }
+
+        await MusicLibraryDialog.ShowAsync(ContentFrame.XamlRoot);
     }
 
     private async void BtnSleepTimer_Click(object sender, RoutedEventArgs e)

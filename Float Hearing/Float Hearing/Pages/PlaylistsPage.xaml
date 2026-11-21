@@ -5,25 +5,131 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="using:Float_Hearing.Pages"
     mc:Ignorable="d"
     NavigationCacheMode="Required">
 
-    <Grid Padding="32,24,32,24" RowSpacing="8">
+    <Grid Padding="32,24,32,24" RowSpacing="12">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <TextBlock
-            Grid.Row="0"
-            Style="{StaticResource TitleTextBlockStyle}"
-            Text="{x:Bind Title, Mode=OneTime}" />
+        <!-- 标题 + 添加 -->
+        <Grid Grid.Row="0" ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBlock
+                Grid.Column="0"
+                Style="{StaticResource TitleTextBlockStyle}"
+                Text="{x:Bind Title, Mode=OneTime}"
+                VerticalAlignment="Center" />
+            <Button
+                Grid.Column="1"
+                x:Name="BtnAddPlaylist"
+                Click="BtnAddPlaylist_Click">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <FontIcon FontSize="14" Glyph="&#xE710;" />
+                    <TextBlock Text="{x:Bind AddLabel, Mode=OneTime}" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
+        </Grid>
 
-        <TextBlock
+        <!-- 歌单网格：可拖拽排序；封面 + 名称；右键菜单 -->
+        <GridView
+            x:Name="PlaylistsGrid"
             Grid.Row="1"
-            Opacity="0.7"
-            Style="{StaticResource BodyTextBlockStyle}"
-            Text="{x:Bind Subtitle, Mode=OneTime}" />
+            ItemsSource="{x:Bind Playlists, Mode=OneWay}"
+            SelectionMode="Single"
+            CanReorderItems="True"
+            CanDragItems="True"
+            AllowDrop="True"
+            IsItemClickEnabled="True"
+            ItemClick="PlaylistsGrid_ItemClick"
+            RightTapped="PlaylistsGrid_RightTapped">
+
+            <GridView.ItemTemplate>
+                <DataTemplate x:DataType="local:PlaylistItem">
+                    <Grid Width="160" RowSpacing="8">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <!-- 封面占位 -->
+                        <Border
+                            Grid.Row="0"
+                            Width="160"
+                            Height="160"
+                            CornerRadius="8"
+                            Background="{ThemeResource CardBackgroundFillColorSecondaryBrush}">
+                            <Grid>
+                                <Image
+                                    x:Name="CoverImage"
+                                    Source="{x:Bind CoverUri, Mode=OneTime}"
+                                    Stretch="UniformToFill"
+                                    Visibility="{x:Bind CoverVisibility, Mode=OneTime}" />
+                                <FontIcon
+                                    x:Name="CoverGlyph"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="40"
+                                    Glyph="&#xE8FD;"
+                                    Visibility="{x:Bind CoverPlaceholderVisibility, Mode=OneTime}" />
+                            </Grid>
+                        </Border>
+
+                        <TextBlock
+                            Grid.Row="1"
+                            Text="{x:Bind Name, Mode=OneTime}"
+                            Style="{StaticResource BodyStrongTextBlockStyle}"
+                            TextTrimming="CharacterEllipsis"
+                            MaxLines="2" />
+                    </Grid>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+
+            <GridView.ItemContainerStyle>
+                <Style TargetType="GridViewItem">
+                    <Setter Property="Margin" Value="0,0,12,12" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </GridView.ItemContainerStyle>
+
+            <GridView.ContextFlyout>
+                <MenuFlyout>
+                    <MenuFlyoutItem
+                        Text="{x:Bind MenuPlay, Mode=OneTime}"
+                        Icon="Play"
+                        Click="MenuPlay_Click" />
+                    <MenuFlyoutItem
+                        Text="{x:Bind MenuRename, Mode=OneTime}"
+                        Icon="Edit"
+                        Click="MenuRename_Click" />
+                    <MenuFlyoutSeparator />
+                    <MenuFlyoutItem
+                        Text="{x:Bind MenuDelete, Mode=OneTime}"
+                        Icon="Delete"
+                        Click="MenuDelete_Click" />
+                </MenuFlyout>
+            </GridView.ContextFlyout>
+        </GridView>
+
+        <!-- 空状态 -->
+        <StackPanel
+            x:Name="EmptyState"
+            Grid.Row="1"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Spacing="8"
+            Visibility="Collapsed">
+            <FontIcon FontSize="48" Glyph="&#xE8FD;" Opacity="0.5" />
+            <TextBlock
+                Style="{StaticResource BodyTextBlockStyle}"
+                Text="{x:Bind EmptyText, Mode=OneTime}"
+                Opacity="0.7" />
+        </StackPanel>
     </Grid>
 </Page>

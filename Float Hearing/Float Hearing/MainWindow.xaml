@@ -30,25 +30,36 @@
             IsPaneToggleButtonVisible="True"
             BackRequested="AppTitleBar_BackRequested"
             PaneToggleRequested="AppTitleBar_PaneToggleRequested">
+            <TitleBar.IconSource>
+                <ImageIconSource ImageSource="ms-appx:///AppIcon.ico" />
+            </TitleBar.IconSource>
             <StackPanel
                 Orientation="Horizontal"
                 Spacing="4"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Margin="0,0,8,0">
-                <!-- 计划暂停 / 设置：标题栏上的命令按钮（有背景与按压反馈） -->
+                <!-- 右侧三枚：仅图标 + 悬浮提示（有按钮背景与按压反馈） -->
+                <AppBarButton
+                    x:Name="BtnMusicLibrary"
+                    Click="BtnMusicLibrary_Click"
+                    ToolTipService.ToolTip="{x:Bind NavMusicLibrary, Mode=OneTime}">
+                    <AppBarButton.Icon>
+                        <FontIcon Glyph="&#xE8B7;" />
+                    </AppBarButton.Icon>
+                </AppBarButton>
                 <AppBarButton
                     x:Name="BtnSleepTimer"
-                    Label="{x:Bind NavSleepTimer, Mode=OneTime}"
-                    Click="BtnSleepTimer_Click">
+                    Click="BtnSleepTimer_Click"
+                    ToolTipService.ToolTip="{x:Bind NavSleepTimer, Mode=OneTime}">
                     <AppBarButton.Icon>
                         <FontIcon Glyph="&#xE823;" />
                     </AppBarButton.Icon>
                 </AppBarButton>
                 <AppBarButton
                     x:Name="BtnSettings"
-                    Label="{x:Bind NavSettings, Mode=OneTime}"
-                    Click="BtnSettings_Click">
+                    Click="BtnSettings_Click"
+                    ToolTipService.ToolTip="{x:Bind NavSettings, Mode=OneTime}">
                     <AppBarButton.Icon>
                         <FontIcon Glyph="&#xE713;" />
                     </AppBarButton.Icon>
