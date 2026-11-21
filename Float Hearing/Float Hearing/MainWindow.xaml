@@ -10,9 +10,12 @@
     Title="FH Reborn"
     mc:Ignorable="d">
 
+    <!-- Mica 暂注释：排查 CoreMessagingXP 启动崩溃；确认后再恢复 -->
+    <!--
     <Window.SystemBackdrop>
         <MicaBackdrop />
     </Window.SystemBackdrop>
+    -->
 
     <Grid x:Name="RootGrid" RowSpacing="0">
         <Grid.RowDefinitions>
@@ -77,7 +80,7 @@
             x:Name="RootNav"
             Grid.Row="1"
             IsBackButtonVisible="Collapsed"
-            IsPaneToggleButtonVisible="Collapsed"
+            IsPaneToggleButtonVisible="False"
             IsSettingsVisible="False"
             OpenPaneLength="260"
             PaneDisplayMode="Left"

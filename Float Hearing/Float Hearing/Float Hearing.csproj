@@ -12,12 +12,20 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>AppIcon.ico</ApplicationIcon>
+    <!-- 系统已装 WindowsAppRuntime 2.7：先用框架依赖验证启动；失败再改回 SelfContained -->
+    <!-- <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained> -->
+    <WindowsAppSDKBootstrapInitialize>true</WindowsAppSDKBootstrapInitialize>
   </PropertyGroup>
 
   <ItemGroup>
     <Content Include="AppIcon.ico" />
     <PRIResource Include="Strings\**\*.resw" />
   </ItemGroup>
+
+  <!-- unpackaged ResourceLoader 默认找 resources.pri -->
+  <Target Name="CopyResourcesPri" AfterTargets="Build">
+    <Copy SourceFiles="$(OutDir)$(AssemblyName).pri" DestinationFiles="$(OutDir)resources.pri" SkipUnchangedFiles="true" Condition="Exists('$(OutDir)$(AssemblyName).pri')" />
+  </Target>
 
   <ItemGroup>
     <Manifest Include="$(ApplicationManifest)" />

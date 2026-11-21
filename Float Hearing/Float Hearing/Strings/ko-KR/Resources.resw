@@ -1,165 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <xsd:schema id="root" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
-    <xsd:element name="root" msdata:IsDataSet="true">
-      <xsd:complexType>
-        <xsd:choice maxOccurs="unbounded">
-          <xsd:element name="metadata">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
-              </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="assembly">
-            <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="data">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
-            </xsd:complexType>
-          </xsd:element>
-          <xsd:element name="resheader">
-            <xsd:complexType>
-              <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
-              </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
-            </xsd:complexType>
-          </xsd:element>
-        </xsd:choice>
-      </xsd:complexType>
-    </xsd:element>
-  </xsd:schema>
-  <resheader name="resmimetype">
-    <value>text/microsoft-resx</value>
-  </resheader>
-  <resheader name="version">
-    <value>2.0</value>
-  </resheader>
-  <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </resheader>
-  <data name="AppTitle" xml:space="preserve">
-    <value>FH Reborn</value>
-  </data>
-  <data name="SearchPlaceholder" xml:space="preserve">
-    <value>搜索歌曲、专辑、艺术家</value>
-  </data>
-  <data name="NavSongs" xml:space="preserve">
-    <value>歌曲</value>
-  </data>
-  <data name="NavAlbums" xml:space="preserve">
-    <value>专辑</value>
-  </data>
-  <data name="NavArtists" xml:space="preserve">
-    <value>艺术家</value>
-  </data>
-  <data name="NavGenres" xml:space="preserve">
-    <value>流派</value>
-  </data>
-  <data name="NavFolders" xml:space="preserve">
-    <value>文件夹</value>
-  </data>
-  <data name="NavRecent" xml:space="preserve">
-    <value>最近播放</value>
-  </data>
-  <data name="NavStats" xml:space="preserve">
-    <value>听歌统计</value>
-  </data>
-  <data name="NavAnalytics" xml:space="preserve">
-    <value>数据分析</value>
-  </data>
-  <data name="NavIdeas" xml:space="preserve">
-    <value>想法</value>
-  </data>
-  <data name="NavSleepTimer" xml:space="preserve">
-    <value>计划暂停</value>
-  </data>
-  <data name="NavSettings" xml:space="preserve">
-    <value>设置</value>
-  </data>
-  <data name="PlayBarNothingPlaying" xml:space="preserve">
-    <value>未在播放</value>
-  </data>
-  <data name="PlayBarUnknownArtist" xml:space="preserve">
-    <value>未知艺术家</value>
-  </data>
-  <data name="PlayPrevious" xml:space="preserve">
-    <value>上一首</value>
-  </data>
-  <data name="PlayNext" xml:space="preserve">
-    <value>下一首</value>
-  </data>
-  <data name="PlayPause" xml:space="preserve">
-    <value>播放/暂停</value>
-  </data>
-  <data name="SettingsTheme" xml:space="preserve">
-    <value>主题</value>
-  </data>
-  <data name="SettingsThemeSystem" xml:space="preserve">
-    <value>跟随系统</value>
-  </data>
-  <data name="SettingsThemeLight" xml:space="preserve">
-    <value>浅色</value>
-  </data>
-  <data name="SettingsThemeDark" xml:space="preserve">
-    <value>深色</value>
-  </data>
-  <data name="SettingsAppearance" xml:space="preserve">
-    <value>外观</value>
-  </data>
-  <data name="PlaceholderComingSoon" xml:space="preserve">
-    <value>此页面即将实现</value>
-  </data>
-  <data name="PageSongsTitle" xml:space="preserve">
-    <value>歌曲</value>
-  </data>
-  <data name="PageAlbumsTitle" xml:space="preserve">
-    <value>专辑</value>
-  </data>
-  <data name="PageArtistsTitle" xml:space="preserve">
-    <value>艺术家</value>
-  </data>
-  <data name="PageGenresTitle" xml:space="preserve">
-    <value>流派</value>
-  </data>
-  <data name="PageFoldersTitle" xml:space="preserve">
-    <value>文件夹</value>
-  </data>
-  <data name="PageRecentTitle" xml:space="preserve">
-    <value>最近播放</value>
-  </data>
-  <data name="PageStatsTitle" xml:space="preserve">
-    <value>听歌统计</value>
-  </data>
-  <data name="PageAnalyticsTitle" xml:space="preserve">
-    <value>数据分析</value>
-  </data>
-  <data name="PageIdeasTitle" xml:space="preserve">
-    <value>想法</value>
-  </data>
-  <data name="PageSleepTimerTitle" xml:space="preserve">
-    <value>计划暂停</value>
-  </data>
-  <data name="PageSettingsTitle" xml:space="preserve">
-    <value>设置</value>
-  </data>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>  <data name="AppTitle" xml:space="preserve"><value>FH Reborn</value></data>
+  <data name="SearchPlaceholder" xml:space="preserve"><value>곡, 앨범, 아티스트 검색</value></data>
+  <data name="NavSongs" xml:space="preserve"><value>곡</value></data>
+  <data name="NavAlbums" xml:space="preserve"><value>앨범</value></data>
+  <data name="NavArtists" xml:space="preserve"><value>아티스트</value></data>
+  <data name="NavGenres" xml:space="preserve"><value>장르</value></data>
+  <data name="NavFolders" xml:space="preserve"><value>폴더</value></data>
+  <data name="NavRecent" xml:space="preserve"><value>최근 재생</value></data>
+  <data name="NavStats" xml:space="preserve"><value>청취 통계</value></data>
+  <data name="NavAnalytics" xml:space="preserve"><value>데이터 분석</value></data>
+  <data name="NavIdeas" xml:space="preserve"><value>아이디어</value></data>
+  <data name="NavSleepTimer" xml:space="preserve"><value>수면 타이머</value></data>
+  <data name="NavSettings" xml:space="preserve"><value>설정</value></data>
+  <data name="PlayBarNothingPlaying" xml:space="preserve"><value>재생 중이 아님</value></data>
+  <data name="PlayBarUnknownArtist" xml:space="preserve"><value>알 수 없는 아티스트</value></data>
+  <data name="PlayPrevious" xml:space="preserve"><value>이전</value></data>
+  <data name="PlayNext" xml:space="preserve"><value>다음</value></data>
+  <data name="PlayPause" xml:space="preserve"><value>재생/일시정지</value></data>
+  <data name="SettingsTheme" xml:space="preserve"><value>테마</value></data>
+  <data name="SettingsThemeSystem" xml:space="preserve"><value>시스템 설정 사용</value></data>
+  <data name="SettingsThemeLight" xml:space="preserve"><value>라이트</value></data>
+  <data name="SettingsThemeDark" xml:space="preserve"><value>다크</value></data>
+  <data name="SettingsAppearance" xml:space="preserve"><value>모양</value></data>
+  <data name="PlaceholderComingSoon" xml:space="preserve"><value>곧 제공</value></data>
+  <data name="PageSongsTitle" xml:space="preserve"><value>곡</value></data>
+  <data name="PageAlbumsTitle" xml:space="preserve"><value>앨범</value></data>
+  <data name="PageArtistsTitle" xml:space="preserve"><value>아티스트</value></data>
+  <data name="PageGenresTitle" xml:space="preserve"><value>장르</value></data>
+  <data name="PageFoldersTitle" xml:space="preserve"><value>폴더</value></data>
+  <data name="PageRecentTitle" xml:space="preserve"><value>최근 재생</value></data>
+  <data name="PageStatsTitle" xml:space="preserve"><value>청취 통계</value></data>
+  <data name="PageAnalyticsTitle" xml:space="preserve"><value>데이터 분석</value></data>
+  <data name="PageIdeasTitle" xml:space="preserve"><value>아이디어</value></data>
+  <data name="PageSleepTimerTitle" xml:space="preserve"><value>수면 타이머</value></data>
+  <data name="PageSettingsTitle" xml:space="preserve"><value>설정</value></data>
 </root>

@@ -14,6 +14,7 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
+        UnhandledException += OnUnhandledException;
     }
 
     /// <summary>主窗口（选择器 HWND 等从此取）。</summary>
@@ -36,6 +37,25 @@ public partial class App : Application
                 we.RequestedTheme = theme;
             }
         }
+    }
+
+    private void OnUnhandledException(object sender, Microsoft.UI.Xaml.UnhandledExceptionEventArgs e)
+    {
+        try
+        {
+            var path = System.IO.Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                "FloatHearing", "startup-error.log");
+            System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path)!);
+            System.IO.File.AppendAllText(path,
+                $"{DateTime.Now:O}\n{e.Exception}\n---\n");
+        }
+        catch
+        {
+            // 日志失败不影响退出路径
+        }
+
+        e.Handled = true;
     }
 
     protected override void OnLaunched(LaunchActivatedEventArgs args)
