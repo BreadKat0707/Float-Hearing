@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="Float_Hearing.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    NavigationCacheMode="Required">
+
+    <ScrollViewer Padding="32,24,32,24">
+        <StackPanel MaxWidth="720" Spacing="24" HorizontalAlignment="Left">
+            <TextBlock
+                Style="{StaticResource TitleTextBlockStyle}"
+                Text="{x:Bind Title, Mode=OneTime}" />
+
+            <!-- 外观 / 主题 -->
+            <StackPanel Spacing="8">
+                <TextBlock
+                    Style="{StaticResource SubtitleTextBlockStyle}"
+                    Text="{x:Bind AppearanceLabel, Mode=OneTime}" />
+
+                <TextBlock
+                    Style="{StaticResource BodyTextBlockStyle}"
+                    Text="{x:Bind ThemeLabel, Mode=OneTime}" />
+
+                <RadioButtons
+                    x:Name="ThemeSelector"
+                    Header="{x:Bind ThemeLabel, Mode=OneTime}"
+                    SelectionChanged="ThemeSelector_SelectionChanged">
+                    <RadioButton
+                        x:Name="ThemeSystem"
+                        Content="{x:Bind ThemeSystemLabel, Mode=OneTime}"
+                        Tag="System" />
+                    <RadioButton
+                        x:Name="ThemeLight"
+                        Content="{x:Bind ThemeLightLabel, Mode=OneTime}"
+                        Tag="Light" />
+                    <RadioButton
+                        x:Name="ThemeDark"
+                        Content="{x:Bind ThemeDarkLabel, Mode=OneTime}"
+                        Tag="Dark" />
+                </RadioButtons>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

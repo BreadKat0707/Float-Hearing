@@ -1,50 +1,66 @@
-﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Shapes;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Float_Hearing.Services;
+using Microsoft.UI.Xaml;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
+namespace Float_Hearing;
 
-namespace Float_Hearing
+/// <summary>
+/// 应用入口：创建主窗口，初始化主题服务。
+/// 服务以后经 App.* 静态入口访问（不引入 DI）。
+/// </summary>
+public partial class App : Application
 {
-    /// <summary>
-    /// Provides application-specific behavior to supplement the default Application class.
-    /// </summary>
-    public partial class App : Application
-    {
-        private Window? _window;
+    private Window? _window;
 
-        /// <summary>
-        /// Initializes the singleton application object.  This is the first line of authored code
-        /// executed, and as such is the logical equivalent of main() or WinMain().
-        /// </summary>
-        public App()
+    public App()
+    {
+        InitializeComponent();
+    }
+
+    /// <summary>主窗口（选择器 HWND 等从此取）。</summary>
+    public static Window? MainWindow { get; private set; }
+
+    public static ThemeService Theme { get; } = ThemeService.Instance;
+
+    /// <summary>设置根元素主题（ThemeService 调用）。</summary>
+    internal void SetElementTheme(ElementTheme theme)
+    {
+        if (_window?.Content is FrameworkElement fe)
         {
-            InitializeComponent();
+            fe.RequestedTheme = theme;
         }
 
-        /// <summary>
-        /// Invoked when the application is launched.
-        /// </summary>
-        /// <param name="args">Details about the launch request and process.</param>
-        protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+        foreach (var w in WindowTracker.All)
         {
-            _window = new MainWindow();
-            _window.Activate();
+            if (w.Content is FrameworkElement we)
+            {
+                we.RequestedTheme = theme;
+            }
+        }
+    }
+
+    protected override void OnLaunched(LaunchActivatedEventArgs args)
+    {
+        _window = new MainWindow();
+        MainWindow = _window;
+        WindowTracker.Register(_window);
+        _window.Activate();
+
+        Theme.Initialize();
+    }
+}
+
+/// <summary>跟踪已打开窗口，便于全局换主题。</summary>
+internal static class WindowTracker
+{
+    private static readonly List<Window> _all = new();
+
+    public static IReadOnlyList<Window> All => _all;
+
+    public static void Register(Window window)
+    {
+        if (!_all.Contains(window))
+        {
+            _all.Add(window);
         }
     }
 }

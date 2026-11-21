@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="AppTitle" xml:space="preserve"><value>FH Reborn</value></data>
+  <data name="SearchPlaceholder" xml:space="preserve"><value>Search songs, albums, artists</value></data>
+  <data name="NavSongs" xml:space="preserve"><value>Songs</value></data>
+  <data name="NavAlbums" xml:space="preserve"><value>Albums</value></data>
+  <data name="NavArtists" xml:space="preserve"><value>Artists</value></data>
+  <data name="NavGenres" xml:space="preserve"><value>Genres</value></data>
+  <data name="NavFolders" xml:space="preserve"><value>Folders</value></data>
+  <data name="NavRecent" xml:space="preserve"><value>Recently played</value></data>
+  <data name="NavStats" xml:space="preserve"><value>Listening stats</value></data>
+  <data name="NavAnalytics" xml:space="preserve"><value>Analytics</value></data>
+  <data name="NavIdeas" xml:space="preserve"><value>Ideas</value></data>
+  <data name="NavSleepTimer" xml:space="preserve"><value>Sleep timer</value></data>
+  <data name="NavSettings" xml:space="preserve"><value>Settings</value></data>
+  <data name="PlayBarNothingPlaying" xml:space="preserve"><value>Nothing playing</value></data>
+  <data name="PlayBarUnknownArtist" xml:space="preserve"><value>Unknown artist</value></data>
+  <data name="PlayPrevious" xml:space="preserve"><value>Previous</value></data>
+  <data name="PlayNext" xml:space="preserve"><value>Next</value></data>
+  <data name="PlayPause" xml:space="preserve"><value>Play or pause</value></data>
+  <data name="SettingsTheme" xml:space="preserve"><value>Theme</value></data>
+  <data name="SettingsThemeSystem" xml:space="preserve"><value>Use system setting</value></data>
+  <data name="SettingsThemeLight" xml:space="preserve"><value>Light</value></data>
+  <data name="SettingsThemeDark" xml:space="preserve"><value>Dark</value></data>
+  <data name="SettingsAppearance" xml:space="preserve"><value>Appearance</value></data>
+  <data name="PlaceholderComingSoon" xml:space="preserve"><value>Coming soon</value></data>
+  <data name="PageSongsTitle" xml:space="preserve"><value>Songs</value></data>
+  <data name="PageAlbumsTitle" xml:space="preserve"><value>Albums</value></data>
+  <data name="PageArtistsTitle" xml:space="preserve"><value>Artists</value></data>
+  <data name="PageGenresTitle" xml:space="preserve"><value>Genres</value></data>
+  <data name="PageFoldersTitle" xml:space="preserve"><value>Folders</value></data>
+  <data name="PageRecentTitle" xml:space="preserve"><value>Recently played</value></data>
+  <data name="PageStatsTitle" xml:space="preserve"><value>Listening stats</value></data>
+  <data name="PageAnalyticsTitle" xml:space="preserve"><value>Analytics</value></data>
+  <data name="PageIdeasTitle" xml:space="preserve"><value>Ideas</value></data>
+  <data name="PageSleepTimerTitle" xml:space="preserve"><value>Sleep timer</value></data>
+  <data name="PageSettingsTitle" xml:space="preserve"><value>Settings</value></data>
+</root>

@@ -10,10 +10,13 @@
     <UseWinUI>true</UseWinUI>
     <WinUISDKReferences>false</WinUISDKReferences>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <ApplicationIcon>AppIcon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <Content Include="AppIcon.ico" />
+    <PRIResource Include="Strings\**\*.resw" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,9 +37,8 @@
   <PropertyGroup>
     <PublishReadyToRun Condition="'$(Configuration)' == 'Debug'">False</PublishReadyToRun>
     <PublishReadyToRun Condition="'$(Configuration)' != 'Debug'">True</PublishReadyToRun>
-    <PublishTrimmed Condition="'$(Configuration)' == 'Debug'">True</PublishTrimmed>
-    <PublishTrimmed Condition="'$(Configuration)' != 'Debug'">True</PublishTrimmed>
-    <ApplicationIcon>Icon.ico</ApplicationIcon>
+    <!-- 勿改回 True：裁剪会剥掉 EF Core 反射构造，引发 EntryCurrentValueComparer MissingMethodException -->
+    <PublishTrimmed>False</PublishTrimmed>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>symbols.nupkg</SymbolPackageFormat>
