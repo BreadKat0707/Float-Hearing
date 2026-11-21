@@ -234,4 +234,19 @@
   <data name="MusicLibraryRefresh" xml:space="preserve">
     <value>Refresh music library</value>
   </data>
+  <data name="NavGroupHistory" xml:space="preserve">
+    <value>Listening history</value>
+  </data>
+  <data name="NavGroupLibrary" xml:space="preserve">
+    <value>Library</value>
+  </data>
+  <data name="NavGroupPlaylists" xml:space="preserve">
+    <value>Playlists</value>
+  </data>
+  <data name="PlaylistDetailSubtitle" xml:space="preserve">
+    <value>Playlist</value>
+  </data>
+  <data name="PlaylistDetailHint" xml:space="preserve">
+    <value>Track list and editing come later</value>
+  </data>
 </root>

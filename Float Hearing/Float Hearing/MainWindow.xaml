@@ -118,6 +118,8 @@
             </NavigationView.PaneHeader>
 
             <NavigationView.MenuItems>
+                <!-- 第一组：音乐库 -->
+                <NavigationViewItemHeader x:Name="HeaderLibrary" />
                 <NavigationViewItem Content="{x:Bind NavSongs, Mode=OneTime}" Tag="Songs" IsSelected="True">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE8D6;" />
@@ -143,14 +145,9 @@
                         <FontIcon Glyph="&#xE8B7;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-                <NavigationViewItem Content="{x:Bind NavPlaylists, Mode=OneTime}" Tag="Playlists">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE90B;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
 
-                <NavigationViewItemSeparator />
-
+                <!-- 第二组：听歌记录（含想法） -->
+                <NavigationViewItemHeader x:Name="HeaderHistory" />
                 <NavigationViewItem Content="{x:Bind NavRecent, Mode=OneTime}" Tag="Recent">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE81C;" />
@@ -161,14 +158,23 @@
                         <FontIcon Glyph="&#xEAFC;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
-
-                <NavigationViewItemSeparator />
-
                 <NavigationViewItem Content="{x:Bind NavIdeas, Mode=OneTime}" Tag="Ideas">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xEA80;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+
+                <!-- 第三组：歌单（首项=新建；其余运行时注入，可拖拽/右键） -->
+                <NavigationViewItemHeader x:Name="HeaderPlaylists" />
+                <NavigationViewItem
+                    x:Name="NavItemNewPlaylist"
+                    Content="{x:Bind NavNewPlaylist, Mode=OneTime}"
+                    Tag="NewPlaylist">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE710;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
+                <!-- Playlist nav items appended after this in code-behind -->
             </NavigationView.MenuItems>
 
             <Frame

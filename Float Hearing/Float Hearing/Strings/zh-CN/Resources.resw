@@ -234,4 +234,19 @@
   <data name="MusicLibraryRefresh" xml:space="preserve">
     <value>刷新音乐库</value>
   </data>
+  <data name="NavGroupHistory" xml:space="preserve">
+    <value>听歌记录</value>
+  </data>
+  <data name="NavGroupLibrary" xml:space="preserve">
+    <value>音乐库</value>
+  </data>
+  <data name="NavGroupPlaylists" xml:space="preserve">
+    <value>歌单</value>
+  </data>
+  <data name="PlaylistDetailSubtitle" xml:space="preserve">
+    <value>歌单</value>
+  </data>
+  <data name="PlaylistDetailHint" xml:space="preserve">
+    <value>歌曲列表与编辑功能稍后完善</value>
+  </data>
 </root>

@@ -189,4 +189,19 @@
   <data name="MusicLibraryRefresh" xml:space="preserve">
     <value>ミュージックライブラリを更新</value>
   </data>
+  <data name="NavGroupHistory" xml:space="preserve">
+    <value>試聴履歴</value>
+  </data>
+  <data name="NavGroupLibrary" xml:space="preserve">
+    <value>ライブラリ</value>
+  </data>
+  <data name="NavGroupPlaylists" xml:space="preserve">
+    <value>プレイリスト</value>
+  </data>
+  <data name="PlaylistDetailSubtitle" xml:space="preserve">
+    <value>プレイリスト</value>
+  </data>
+  <data name="PlaylistDetailHint" xml:space="preserve">
+    <value>曲リストと編集は後で対応</value>
+  </data>
 </root>

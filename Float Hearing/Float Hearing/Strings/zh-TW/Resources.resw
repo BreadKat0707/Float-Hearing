@@ -189,4 +189,19 @@
   <data name="MusicLibraryRefresh" xml:space="preserve">
     <value>重新整理音樂庫</value>
   </data>
+  <data name="NavGroupHistory" xml:space="preserve">
+    <value>聽歌記錄</value>
+  </data>
+  <data name="NavGroupLibrary" xml:space="preserve">
+    <value>音樂庫</value>
+  </data>
+  <data name="NavGroupPlaylists" xml:space="preserve">
+    <value>歌單</value>
+  </data>
+  <data name="PlaylistDetailSubtitle" xml:space="preserve">
+    <value>歌單</value>
+  </data>
+  <data name="PlaylistDetailHint" xml:space="preserve">
+    <value>歌曲清單與編輯功能稍後完善</value>
+  </data>
 </root>

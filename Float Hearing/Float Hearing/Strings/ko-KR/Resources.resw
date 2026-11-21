@@ -189,4 +189,19 @@
   <data name="MusicLibraryRefresh" xml:space="preserve">
     <value>음악 보관함 새로고침</value>
   </data>
+  <data name="NavGroupHistory" xml:space="preserve">
+    <value>청취 기록</value>
+  </data>
+  <data name="NavGroupLibrary" xml:space="preserve">
+    <value>보관함</value>
+  </data>
+  <data name="NavGroupPlaylists" xml:space="preserve">
+    <value>재생목록</value>
+  </data>
+  <data name="PlaylistDetailSubtitle" xml:space="preserve">
+    <value>재생목록</value>
+  </data>
+  <data name="PlaylistDetailHint" xml:space="preserve">
+    <value>곡 목록과 편집은 추후 제공</value>
+  </data>
 </root>
