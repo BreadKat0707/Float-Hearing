@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
@@ -8,7 +8,8 @@
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   xmlns:systemai="http://schemas.microsoft.com/appx/manifest/systemai/windows10"
   xmlns:uap18="http://schemas.microsoft.com/appx/manifest/uap/windows10/18"
-  IgnorableNamespaces="uap uap10 rescap systemai uap18">
+  xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3"
+  IgnorableNamespaces="uap uap10 rescap systemai uap18 uap3">
 
   <Identity
     Name="LemonDrop.FloatHearing"
@@ -38,7 +39,9 @@
   <Applications>
     <Application Id="App"
       Executable="$targetnametoken$.exe"
-      EntryPoint="$targetentrypoint$" uap18:TrustLevel="appContainer" uap18:RuntimeBehavior="windowsApp">
+      EntryPoint="Windows.FullTrustApplication"
+      uap18:TrustLevel="mediumIL"
+      uap18:RuntimeBehavior="packagedClassicApp">
       <uap:VisualElements
         DisplayName="Float Hearing"
         Description="Float Hearing -  基于WinUI的本地音乐播放器"
@@ -67,5 +70,6 @@
     <rescap:Capability Name="runFullTrust" />
     <systemai:Capability Name="systemAIModels"/>
     <uap:Capability Name="musicLibrary"/>
+    <uap3:Capability Name="backgroundMediaPlayback"/>
   </Capabilities>
 </Package>

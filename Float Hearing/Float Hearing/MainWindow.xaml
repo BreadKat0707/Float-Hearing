@@ -7,15 +7,12 @@
     xmlns:local="using:Float_Hearing"
     xmlns:controls="using:Float_Hearing.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    Title="FH Reborn"
+    Title="Float Hearing"
     mc:Ignorable="d">
 
-    <!-- Mica 暂注释：排查 CoreMessagingXP 启动崩溃；确认后再恢复 -->
-    <!--
     <Window.SystemBackdrop>
         <MicaBackdrop />
     </Window.SystemBackdrop>
-    -->
 
     <Grid x:Name="RootGrid" RowSpacing="0">
         <Grid.RowDefinitions>
@@ -122,6 +119,11 @@
                         <FontIcon Glyph="&#xE8B7;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
+                <NavigationViewItem Content="{x:Bind NavPlaylists, Mode=OneTime}" Tag="Playlists">
+                    <NavigationViewItem.Icon>
+                        <FontIcon Glyph="&#xE8FD;" />
+                    </NavigationViewItem.Icon>
+                </NavigationViewItem>
 
                 <NavigationViewItemSeparator />
 
@@ -133,11 +135,6 @@
                 <NavigationViewItem Content="{x:Bind NavStats, Mode=OneTime}" Tag="Stats">
                     <NavigationViewItem.Icon>
                         <FontIcon Glyph="&#xE9D9;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-                <NavigationViewItem Content="{x:Bind NavAnalytics, Mode=OneTime}" Tag="Analytics">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE9D2;" />
                     </NavigationViewItem.Icon>
                 </NavigationViewItem>
 

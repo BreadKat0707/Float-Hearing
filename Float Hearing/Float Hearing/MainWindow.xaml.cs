@@ -24,9 +24,9 @@ public sealed partial class MainWindow : Window
         NavArtists = Loc.Get("NavArtists");
         NavGenres = Loc.Get("NavGenres");
         NavFolders = Loc.Get("NavFolders");
+        NavPlaylists = Loc.Get("NavPlaylists");
         NavRecent = Loc.Get("NavRecent");
         NavStats = Loc.Get("NavStats");
-        NavAnalytics = Loc.Get("NavAnalytics");
         NavIdeas = Loc.Get("NavIdeas");
         NavSleepTimer = Loc.Get("NavSleepTimer");
         NavSettings = Loc.Get("NavSettings");
@@ -51,9 +51,9 @@ public sealed partial class MainWindow : Window
     public string NavArtists { get; }
     public string NavGenres { get; }
     public string NavFolders { get; }
+    public string NavPlaylists { get; }
     public string NavRecent { get; }
     public string NavStats { get; }
-    public string NavAnalytics { get; }
     public string NavIdeas { get; }
     public string NavSleepTimer { get; }
     public string NavSettings { get; }
@@ -87,9 +87,9 @@ public sealed partial class MainWindow : Window
             "Artists" => typeof(ArtistsPage),
             "Genres" => typeof(GenresPage),
             "Folders" => typeof(FoldersPage),
+            "Playlists" => typeof(PlaylistsPage),
             "Recent" => typeof(RecentPage),
             "Stats" => typeof(StatsPage),
-            "Analytics" => typeof(AnalyticsPage),
             "Ideas" => typeof(IdeasPage),
             "SleepTimer" => typeof(SleepTimerPage),
             "Settings" => typeof(SettingsPage),
@@ -143,9 +143,9 @@ public sealed partial class MainWindow : Window
         "Artists" => pageType == typeof(ArtistsPage),
         "Genres" => pageType == typeof(GenresPage),
         "Folders" => pageType == typeof(FoldersPage),
+        "Playlists" => pageType == typeof(PlaylistsPage),
         "Recent" => pageType == typeof(RecentPage),
         "Stats" => pageType == typeof(StatsPage),
-        "Analytics" => pageType == typeof(AnalyticsPage),
         "Ideas" => pageType == typeof(IdeasPage),
         "SleepTimer" => pageType == typeof(SleepTimerPage),
         "Settings" => pageType == typeof(SettingsPage),

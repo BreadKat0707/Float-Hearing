@@ -58,7 +58,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppTitle" xml:space="preserve">
-    <value>FH Reborn</value>
+    <value>Float Hearing</value>
   </data>
   <data name="SearchPlaceholder" xml:space="preserve">
     <value>搜索歌曲、专辑、艺术家</value>
@@ -82,7 +82,7 @@
     <value>最近播放</value>
   </data>
   <data name="NavStats" xml:space="preserve">
-    <value>听歌统计</value>
+    <value>听歌统计与数据分析</value>
   </data>
   <data name="NavAnalytics" xml:space="preserve">
     <value>数据分析</value>
@@ -148,7 +148,7 @@
     <value>最近播放</value>
   </data>
   <data name="PageStatsTitle" xml:space="preserve">
-    <value>听歌统计</value>
+    <value>听歌统计与数据分析</value>
   </data>
   <data name="PageAnalyticsTitle" xml:space="preserve">
     <value>数据分析</value>
@@ -161,5 +161,11 @@
   </data>
   <data name="PageSettingsTitle" xml:space="preserve">
     <value>设置</value>
+  </data>
+  <data name="PagePlaylistsTitle" xml:space="preserve">
+    <value>歌单</value>
+  </data>
+  <data name="NavPlaylists" xml:space="preserve">
+    <value>歌单</value>
   </data>
 </root>

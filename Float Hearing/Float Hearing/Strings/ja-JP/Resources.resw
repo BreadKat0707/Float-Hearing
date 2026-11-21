@@ -1,41 +1,126 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>  <data name="AppTitle" xml:space="preserve"><value>FH Reborn</value></data>
-  <data name="SearchPlaceholder" xml:space="preserve"><value>曲・アルバム・アーティストを検索</value></data>
-  <data name="NavSongs" xml:space="preserve"><value>曲</value></data>
-  <data name="NavAlbums" xml:space="preserve"><value>アルバム</value></data>
-  <data name="NavArtists" xml:space="preserve"><value>アーティスト</value></data>
-  <data name="NavGenres" xml:space="preserve"><value>ジャンル</value></data>
-  <data name="NavFolders" xml:space="preserve"><value>フォルダー</value></data>
-  <data name="NavRecent" xml:space="preserve"><value>最近再生した曲</value></data>
-  <data name="NavStats" xml:space="preserve"><value>試聴統計</value></data>
-  <data name="NavAnalytics" xml:space="preserve"><value>データ分析</value></data>
-  <data name="NavIdeas" xml:space="preserve"><value>アイデア</value></data>
-  <data name="NavSleepTimer" xml:space="preserve"><value>スリープタイマー</value></data>
-  <data name="NavSettings" xml:space="preserve"><value>設定</value></data>
-  <data name="PlayBarNothingPlaying" xml:space="preserve"><value>再生中ではありません</value></data>
-  <data name="PlayBarUnknownArtist" xml:space="preserve"><value>不明なアーティスト</value></data>
-  <data name="PlayPrevious" xml:space="preserve"><value>前へ</value></data>
-  <data name="PlayNext" xml:space="preserve"><value>次へ</value></data>
-  <data name="PlayPause" xml:space="preserve"><value>再生/一時停止</value></data>
-  <data name="SettingsTheme" xml:space="preserve"><value>テーマ</value></data>
-  <data name="SettingsThemeSystem" xml:space="preserve"><value>システムに合わせる</value></data>
-  <data name="SettingsThemeLight" xml:space="preserve"><value>ライト</value></data>
-  <data name="SettingsThemeDark" xml:space="preserve"><value>ダーク</value></data>
-  <data name="SettingsAppearance" xml:space="preserve"><value>外観</value></data>
-  <data name="PlaceholderComingSoon" xml:space="preserve"><value>近日公開</value></data>
-  <data name="PageSongsTitle" xml:space="preserve"><value>曲</value></data>
-  <data name="PageAlbumsTitle" xml:space="preserve"><value>アルバム</value></data>
-  <data name="PageArtistsTitle" xml:space="preserve"><value>アーティスト</value></data>
-  <data name="PageGenresTitle" xml:space="preserve"><value>ジャンル</value></data>
-  <data name="PageFoldersTitle" xml:space="preserve"><value>フォルダー</value></data>
-  <data name="PageRecentTitle" xml:space="preserve"><value>最近再生した曲</value></data>
-  <data name="PageStatsTitle" xml:space="preserve"><value>試聴統計</value></data>
-  <data name="PageAnalyticsTitle" xml:space="preserve"><value>データ分析</value></data>
-  <data name="PageIdeasTitle" xml:space="preserve"><value>アイデア</value></data>
-  <data name="PageSleepTimerTitle" xml:space="preserve"><value>スリープタイマー</value></data>
-  <data name="PageSettingsTitle" xml:space="preserve"><value>設定</value></data>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppTitle" xml:space="preserve">
+    <value>Float Hearing</value>
+  </data>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>曲・アルバム・アーティストを検索</value>
+  </data>
+  <data name="NavSongs" xml:space="preserve">
+    <value>曲</value>
+  </data>
+  <data name="NavAlbums" xml:space="preserve">
+    <value>アルバム</value>
+  </data>
+  <data name="NavArtists" xml:space="preserve">
+    <value>アーティスト</value>
+  </data>
+  <data name="NavGenres" xml:space="preserve">
+    <value>ジャンル</value>
+  </data>
+  <data name="NavFolders" xml:space="preserve">
+    <value>フォルダー</value>
+  </data>
+  <data name="NavRecent" xml:space="preserve">
+    <value>最近再生した曲</value>
+  </data>
+  <data name="NavStats" xml:space="preserve">
+    <value>試聴統計と分析</value>
+  </data>
+  <data name="NavAnalytics" xml:space="preserve">
+    <value>データ分析</value>
+  </data>
+  <data name="NavIdeas" xml:space="preserve">
+    <value>アイデア</value>
+  </data>
+  <data name="NavSleepTimer" xml:space="preserve">
+    <value>スリープタイマー</value>
+  </data>
+  <data name="NavSettings" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="PlayBarNothingPlaying" xml:space="preserve">
+    <value>再生中ではありません</value>
+  </data>
+  <data name="PlayBarUnknownArtist" xml:space="preserve">
+    <value>不明なアーティスト</value>
+  </data>
+  <data name="PlayPrevious" xml:space="preserve">
+    <value>前へ</value>
+  </data>
+  <data name="PlayNext" xml:space="preserve">
+    <value>次へ</value>
+  </data>
+  <data name="PlayPause" xml:space="preserve">
+    <value>再生/一時停止</value>
+  </data>
+  <data name="SettingsTheme" xml:space="preserve">
+    <value>テーマ</value>
+  </data>
+  <data name="SettingsThemeSystem" xml:space="preserve">
+    <value>システムに合わせる</value>
+  </data>
+  <data name="SettingsThemeLight" xml:space="preserve">
+    <value>ライト</value>
+  </data>
+  <data name="SettingsThemeDark" xml:space="preserve">
+    <value>ダーク</value>
+  </data>
+  <data name="SettingsAppearance" xml:space="preserve">
+    <value>外観</value>
+  </data>
+  <data name="PlaceholderComingSoon" xml:space="preserve">
+    <value>近日公開</value>
+  </data>
+  <data name="PageSongsTitle" xml:space="preserve">
+    <value>曲</value>
+  </data>
+  <data name="PageAlbumsTitle" xml:space="preserve">
+    <value>アルバム</value>
+  </data>
+  <data name="PageArtistsTitle" xml:space="preserve">
+    <value>アーティスト</value>
+  </data>
+  <data name="PageGenresTitle" xml:space="preserve">
+    <value>ジャンル</value>
+  </data>
+  <data name="PageFoldersTitle" xml:space="preserve">
+    <value>フォルダー</value>
+  </data>
+  <data name="PageRecentTitle" xml:space="preserve">
+    <value>最近再生した曲</value>
+  </data>
+  <data name="PageStatsTitle" xml:space="preserve">
+    <value>試聴統計と分析</value>
+  </data>
+  <data name="PageAnalyticsTitle" xml:space="preserve">
+    <value>データ分析</value>
+  </data>
+  <data name="PageIdeasTitle" xml:space="preserve">
+    <value>アイデア</value>
+  </data>
+  <data name="PageSleepTimerTitle" xml:space="preserve">
+    <value>スリープタイマー</value>
+  </data>
+  <data name="PageSettingsTitle" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="PagePlaylistsTitle" xml:space="preserve">
+    <value>プレイリスト</value>
+  </data>
+  <data name="NavPlaylists" xml:space="preserve">
+    <value>プレイリスト</value>
+  </data>
 </root>

@@ -12,9 +12,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>AppIcon.ico</ApplicationIcon>
-    <!-- 系统已装 WindowsAppRuntime 2.7：先用框架依赖验证启动；失败再改回 SelfContained -->
+    <!-- 系统已装 WindowsAppRuntime 2.7：框架依赖 + Bootstrap（仅未打包时初始化） -->
     <!-- <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained> -->
-    <WindowsAppSDKBootstrapInitialize>true</WindowsAppSDKBootstrapInitialize>
+    <WindowsAppSdkBootstrapInitialize>true</WindowsAppSdkBootstrapInitialize>
+    <!-- MSIX 包身份下 Bootstrap 会 0x80070032；有包身份时 NoOp，未打包仍初始化 -->
+    <WindowsAppSDKBootstrapAutoInitializeOptions_OnPackageIdentity_NoOp>true</WindowsAppSDKBootstrapAutoInitializeOptions_OnPackageIdentity_NoOp>
+    <WindowsAppSDKBootstrapAutoInitializeOptions_OnNoMatch_ShowUI>true</WindowsAppSDKBootstrapAutoInitializeOptions_OnNoMatch_ShowUI>
   </PropertyGroup>
 
   <ItemGroup>
