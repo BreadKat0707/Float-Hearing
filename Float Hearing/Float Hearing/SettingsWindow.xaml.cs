@@ -31,6 +31,8 @@ public sealed partial class SettingsWindow : Window
 
         Title = title;
         WindowTracker.Register(this);
+        Closed += (_, _) => WindowTracker.Unregister(this);
+
         // 与全局主题同步（打开时套用当前主题）
         if (Content is FrameworkElement fe)
         {

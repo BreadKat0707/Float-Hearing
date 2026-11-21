@@ -22,20 +22,32 @@ public partial class App : Application
 
     public static ThemeService Theme { get; } = ThemeService.Instance;
 
-    /// <summary>设置根元素主题（ThemeService 调用）。</summary>
+    /// <summary>设置根元素主题（ThemeService 调用）。逐窗口隔离，避免一窗失败拖垮全局。</summary>
     internal void SetElementTheme(ElementTheme theme)
     {
-        if (_window?.Content is FrameworkElement fe)
+        static void ApplyTheme(Window window, ElementTheme t)
         {
-            fe.RequestedTheme = theme;
+            try
+            {
+                if (window.Content is FrameworkElement fe)
+                {
+                    fe.RequestedTheme = t;
+                }
+            }
+            catch (Exception)
+            {
+                // 窗口已关闭/句柄失效时忽略
+            }
         }
 
-        foreach (var w in WindowTracker.All)
+        if (_window is not null)
         {
-            if (w.Content is FrameworkElement we)
-            {
-                we.RequestedTheme = theme;
-            }
+            ApplyTheme(_window, theme);
+        }
+
+        foreach (var w in WindowTracker.Snapshot())
+        {
+            ApplyTheme(w, theme);
         }
     }
 
@@ -69,18 +81,39 @@ public partial class App : Application
     }
 }
 
-/// <summary>跟踪已打开窗口，便于全局换主题。</summary>
+/// <summary>跟踪已打开窗口，便于全局换主题；关闭时注销，避免访问已销毁窗口。</summary>
 internal static class WindowTracker
 {
+    private static readonly object _gate = new();
     private static readonly List<Window> _all = new();
-
-    public static IReadOnlyList<Window> All => _all;
 
     public static void Register(Window window)
     {
-        if (!_all.Contains(window))
+        lock (_gate)
         {
-            _all.Add(window);
+            if (!_all.Contains(window))
+            {
+                _all.Add(window);
+            }
+        }
+
+        window.Closed += (_, _) => Unregister(window);
+    }
+
+    public static void Unregister(Window window)
+    {
+        lock (_gate)
+        {
+            _all.Remove(window);
+        }
+    }
+
+    /// <summary>拷贝快照，避免遍历中修改集合。</summary>
+    public static Window[] Snapshot()
+    {
+        lock (_gate)
+        {
+            return _all.ToArray();
         }
     }
 }
