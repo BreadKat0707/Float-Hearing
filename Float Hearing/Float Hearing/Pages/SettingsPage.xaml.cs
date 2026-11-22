@@ -244,10 +244,8 @@ public sealed partial class SettingsPage : Page
         }
 
         BackgroundService.Instance.ImageDim = e.NewValue;
-        if (BackgroundService.Instance.Mode == BackgroundMode.Image)
-        {
-            BackgroundService.Instance.NotifySettingsChanged();
-        }
+        // 只刷 dim/blur，不重载位图
+        BackgroundService.Instance.UpdateImageEffects();
     }
 
     private void ImageBlurSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
@@ -258,10 +256,7 @@ public sealed partial class SettingsPage : Page
         }
 
         BackgroundService.Instance.ImageBlur = e.NewValue;
-        if (BackgroundService.Instance.Mode == BackgroundMode.Image)
-        {
-            BackgroundService.Instance.NotifySettingsChanged();
-        }
+        BackgroundService.Instance.UpdateImageEffects();
     }
 
     private async void PickImage_Click(object sender, RoutedEventArgs e)

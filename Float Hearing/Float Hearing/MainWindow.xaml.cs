@@ -101,7 +101,7 @@ public sealed partial class MainWindow : Window
     public string MenuRename { get; }
     public string MenuDelete { get; }
 
-    private async void RootNav_Loaded(object sender, RoutedEventArgs e)
+    private void RootNav_Loaded(object sender, RoutedEventArgs e)
     {
         if (_navInitialized)
         {
@@ -110,10 +110,7 @@ public sealed partial class MainWindow : Window
 
         _navInitialized = true;
         RebuildPlaylistNavItems();
-
-        // 应用内 Splash，再进主内容
-        ContentFrame.Navigate(typeof(SplashPage));
-        await Task.Delay(1200);
+        // 启动画面走 MSIX 清单 SplashScreen，不进应用内页
         ContentFrame.Navigate(typeof(SongsPage));
         UpdateBackButton();
     }

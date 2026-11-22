@@ -40,6 +40,8 @@
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools.WinApp" Version="*" />
     <!-- 用户指定：SettingsCard / SettingsExpander -->
     <PackageReference Include="CommunityToolkit.WinUI.Controls.SettingsControls" Version="8.2.251219" />
+    <!-- 图片背景模糊（GaussianBlurEffect） -->
+    <PackageReference Include="Microsoft.Graphics.Win2D" Version="1.4.0" />
   </ItemGroup>
 
   <PropertyGroup Label="Globals">
