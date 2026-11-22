@@ -1,5 +1,6 @@
 using Microsoft.Graphics.Canvas.Effects;
 using Microsoft.UI.Composition;
+using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
@@ -27,12 +28,13 @@ public enum BackgroundMode
 
 /// <summary>
 /// 全局背景：Solid / Mica / Mica Alt / Acrylic(Base·Thin·Default·Custom) / Fluid 占位 / 图片(dim+blur)。
-/// 亚克力 Base/Thin/Default 走 DesktopAcrylicBackdrop.Kind；Custom 走 AcrylicBrush 参数。
-/// 图片：缓存位图，dim 仅改透明度；blur 用 Win2D GaussianBlurEffect。
+/// Mica=强类型 MicaKind；Acrylic Base/Thin/Default=DesktopAcrylicController；
+/// Custom=DesktopAcrylic 模糊材质 + 半透明着色层（AcrylicBrush 采不到桌面，不用）。
 /// </summary>
 public sealed class BackgroundService
 {
     private readonly Dictionary<Window, ImageLayer> _layers = [];
+    private readonly Dictionary<Window, AcrylicSystemBackdrop> _acrylicBackdrops = [];
     private readonly Dictionary<string, BitmapImage> _bitmapCache = new(StringComparer.OrdinalIgnoreCase);
 
     public static BackgroundService Instance { get; } = new();
@@ -109,13 +111,17 @@ public sealed class BackgroundService
                 return;
             }
 
+            // 释放上一轮自定义亚克力控制器
+            DisposeAcrylic(window);
+
             window.SystemBackdrop = Mode switch
             {
-                BackgroundMode.Mica => CreateMica(false),
-                BackgroundMode.MicaAlt => CreateMica(true),
-                BackgroundMode.AcrylicBase => CreateAcrylicBackdrop("Base"),
-                BackgroundMode.AcrylicThin => CreateAcrylicBackdrop("Thin"),
-                BackgroundMode.AcrylicDefault => CreateAcrylicBackdrop("Default"),
+                BackgroundMode.Mica => BackdropFactory.CreateMica(false),
+                BackgroundMode.MicaAlt => BackdropFactory.CreateMica(true),
+                BackgroundMode.AcrylicBase => CreateAndTrackAcrylic(window, DesktopAcrylicKind.Base),
+                BackgroundMode.AcrylicThin => CreateAndTrackAcrylic(window, DesktopAcrylicKind.Thin),
+                BackgroundMode.AcrylicDefault => CreateAndTrackAcrylic(window, DesktopAcrylicKind.Default),
+                BackgroundMode.AcrylicCustom => CreateAndTrackAcrylic(window, DesktopAcrylicKind.Default),
                 _ => null,
             };
 
@@ -128,9 +134,9 @@ public sealed class BackgroundService
                     HideLayer(layer);
                     break;
 
-                // Custom：AcrylicBrush（tint/opacity/luminosity 可调）；Base/Thin/Default 用 SystemBackdrop
                 case BackgroundMode.AcrylicCustom:
-                    root.Background = CreateAcrylicBrush(AcrylicTintColor, AcrylicTintOpacity, AcrylicLuminosity);
+                    // 桌面亚克力模糊来自 SystemBackdrop；此处叠半透明 tint（alpha=着色不透明度）
+                    root.Background = CreateTintOverlay();
                     HideLayer(layer);
                     break;
 
@@ -144,6 +150,7 @@ public sealed class BackgroundService
                     break;
 
                 default:
+                    // Mica / Acrylic* → SystemBackdrop 提供材质，根透明
                     root.Background = null;
                     HideLayer(layer);
                     break;
@@ -154,34 +161,31 @@ public sealed class BackgroundService
         }
     }
 
-    private static MicaBackdrop CreateMica(bool alt)
+    private SystemBackdrop CreateAndTrackAcrylic(Window window, DesktopAcrylicKind kind)
     {
-        var backdrop = new MicaBackdrop();
-        SetKind(backdrop, alt ? "Alt" : "Base");
+        var backdrop = new AcrylicSystemBackdrop { Kind = kind };
+        backdrop.Attach(window);
+        _acrylicBackdrops[window] = backdrop;
         return backdrop;
     }
 
-    private static DesktopAcrylicBackdrop CreateAcrylicBackdrop(string kind)
+    private void DisposeAcrylic(Window window)
     {
-        var backdrop = new DesktopAcrylicBackdrop();
-        SetKind(backdrop, kind);
-        return backdrop;
+        if (_acrylicBackdrops.Remove(window, out var old))
+        {
+            old.Dispose();
+        }
     }
 
-    private static void SetKind(object backdrop, string kindName)
+    /// <summary>自定义亚克力着色层（配合 DesktopAcrylic 模糊）。</summary>
+    private Brush CreateTintOverlay()
     {
-        try
-        {
-            var prop = backdrop.GetType().GetProperty("Kind");
-            if (prop is { CanWrite: true })
-            {
-                prop.SetValue(backdrop, Enum.Parse(prop.PropertyType, kindName));
-            }
-        }
-        catch
-        {
-            // 无 Kind 则保持默认
-        }
+        var color = ParseColor(AcrylicTintColor);
+        var alpha = (byte)Math.Clamp(AcrylicTintOpacity * (byte.MaxValue), 0, 255);
+        // 若 hex 已带 alpha 通道则优先用其 alpha * 不透明度滑条
+        var a = color.A == 255 ? alpha : (byte)(color.A * AcrylicTintOpacity);
+        var c = Microsoft.UI.ColorHelper.FromArgb(a, color.R, color.G, color.B);
+        return new SolidColorBrush(c);
     }
 
     private sealed class ImageLayer
@@ -350,31 +354,6 @@ public sealed class BackgroundService
 
     private static SolidColorBrush ToSolid(string hex)
         => new(ParseColor(hex.Length >= 7 ? hex : "#202020"));
-
-    /// <summary>自定义亚克力：AcrylicBrush（tint / tintOpacity / luminosity）。</summary>
-    private static AcrylicBrush CreateAcrylicBrush(string tint, double tintOpacity, double luminosity)
-    {
-        var brush = new AcrylicBrush
-        {
-            TintColor = ParseColor(tint),
-            TintOpacity = Math.Clamp(tintOpacity, 0, 1),
-            FallbackColor = ParseColor("#CC1C1C1C"),
-        };
-
-        try
-        {
-            var prop = typeof(AcrylicBrush).GetProperty("LuminosityOpacity");
-            if (prop is { CanWrite: true })
-            {
-                prop.SetValue(brush, Math.Clamp(luminosity, 0, 1));
-            }
-        }
-        catch
-        {
-        }
-
-        return brush;
-    }
 
     private static Windows.UI.Color ParseColor(string hex)
     {
