@@ -249,4 +249,25 @@
   <data name="PlaylistDetailHint" xml:space="preserve">
     <value>Track list and editing come later</value>
   </data>
+  <data name="SettingsMica" xml:space="preserve">
+    <value>Mica material</value>
+  </data>
+  <data name="SettingsMicaDescription" xml:space="preserve">
+    <value>Use Mica on the main window (full effect after restart)</value>
+  </data>
+  <data name="SettingsAppearanceMore" xml:space="preserve">
+    <value>More appearance</value>
+  </data>
+  <data name="SettingsPlayBar" xml:space="preserve">
+    <value>Bottom play bar</value>
+  </data>
+  <data name="SettingsAppearanceMoreDescription" xml:space="preserve">
+    <value>Material and UI toggles</value>
+  </data>
+  <data name="SettingsPlayBarDescription" xml:space="preserve">
+    <value>Playback controls at the bottom of the window</value>
+  </data>
+  <data name="SettingsThemeDescription" xml:space="preserve">
+    <value>Choose app theme: follow system, light, or dark</value>
+  </data>
 </root>

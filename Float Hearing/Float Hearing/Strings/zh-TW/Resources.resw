@@ -204,4 +204,25 @@
   <data name="PlaylistDetailHint" xml:space="preserve">
     <value>歌曲清單與編輯功能稍後完善</value>
   </data>
+  <data name="SettingsMica" xml:space="preserve">
+    <value>Mica 材質</value>
+  </data>
+  <data name="SettingsMicaDescription" xml:space="preserve">
+    <value>主視窗使用雲母背景（需重啟後完整生效）</value>
+  </data>
+  <data name="SettingsAppearanceMore" xml:space="preserve">
+    <value>更多外觀</value>
+  </data>
+  <data name="SettingsPlayBar" xml:space="preserve">
+    <value>底部播放條</value>
+  </data>
+  <data name="SettingsAppearanceMoreDescription" xml:space="preserve">
+    <value>材質與介面元素開關</value>
+  </data>
+  <data name="SettingsPlayBarDescription" xml:space="preserve">
+    <value>顯示在視窗底部的播放控制條</value>
+  </data>
+  <data name="SettingsThemeDescription" xml:space="preserve">
+    <value>選擇應用配色：跟隨系統、淺色或深色</value>
+  </data>
 </root>

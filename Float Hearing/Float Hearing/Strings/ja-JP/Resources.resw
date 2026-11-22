@@ -204,4 +204,25 @@
   <data name="PlaylistDetailHint" xml:space="preserve">
     <value>曲リストと編集は後で対応</value>
   </data>
+  <data name="SettingsMica" xml:space="preserve">
+    <value>Mica マテリアル</value>
+  </data>
+  <data name="SettingsMicaDescription" xml:space="preserve">
+    <value>メインウィンドウに Mica（再起動後に完全反映）</value>
+  </data>
+  <data name="SettingsAppearanceMore" xml:space="preserve">
+    <value>その他の外観</value>
+  </data>
+  <data name="SettingsPlayBar" xml:space="preserve">
+    <value>ボトムプレイバー</value>
+  </data>
+  <data name="SettingsAppearanceMoreDescription" xml:space="preserve">
+    <value>素材と UI の切り替え</value>
+  </data>
+  <data name="SettingsPlayBarDescription" xml:space="preserve">
+    <value>ウィンドウ下部の再生コントロール</value>
+  </data>
+  <data name="SettingsThemeDescription" xml:space="preserve">
+    <value>テーマを選択：システムに合わせる / ライト / ダーク</value>
+  </data>
 </root>

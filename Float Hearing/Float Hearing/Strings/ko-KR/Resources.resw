@@ -204,4 +204,25 @@
   <data name="PlaylistDetailHint" xml:space="preserve">
     <value>곡 목록과 편집은 추후 제공</value>
   </data>
+  <data name="SettingsMica" xml:space="preserve">
+    <value>Mica 재질</value>
+  </data>
+  <data name="SettingsMicaDescription" xml:space="preserve">
+    <value>메인 창에 Mica 적용(재시작 후 완전 반영)</value>
+  </data>
+  <data name="SettingsAppearanceMore" xml:space="preserve">
+    <value>추가 모양</value>
+  </data>
+  <data name="SettingsPlayBar" xml:space="preserve">
+    <value>하단 재생바</value>
+  </data>
+  <data name="SettingsAppearanceMoreDescription" xml:space="preserve">
+    <value>재질 및 UI 토글</value>
+  </data>
+  <data name="SettingsPlayBarDescription" xml:space="preserve">
+    <value>창 하단의 재생 컨트롤</value>
+  </data>
+  <data name="SettingsThemeDescription" xml:space="preserve">
+    <value>테마 선택: 시스템 / 라이트 / 다크</value>
+  </data>
 </root>

@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     NavigationCacheMode="Required">
 
-    <Grid Padding="32,24,32,24" RowSpacing="8">
+    <Grid Padding="32,16,32,16" RowSpacing="8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -20,10 +20,18 @@
             Style="{StaticResource TitleTextBlockStyle}"
             Text="{x:Bind Title, Mode=OneTime}" />
 
-        <TextBlock
+        <!-- 路径面包屑 -->
+        <BreadcrumbBar
+            x:Name="PathBreadcrumb"
             Grid.Row="1"
-            Opacity="0.7"
-            Style="{StaticResource BodyTextBlockStyle}"
-            Text="{x:Bind Subtitle, Mode=OneTime}" />
+            ItemClicked="PathBreadcrumb_ItemClicked" />
+
+        <!-- 文件夹树 -->
+        <TreeView
+            x:Name="FolderTree"
+            Grid.Row="2"
+            SelectionMode="Single"
+            ItemInvoked="FolderTree_ItemInvoked"
+            Expanding="FolderTree_Expanding" />
     </Grid>
 </Page>

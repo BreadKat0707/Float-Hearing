@@ -5,28 +5,27 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
     mc:Ignorable="d"
     NavigationCacheMode="Required">
 
     <ScrollViewer Padding="32,24,32,24">
-        <StackPanel MaxWidth="720" Spacing="24" HorizontalAlignment="Left">
+        <StackPanel MaxWidth="720" Spacing="16" HorizontalAlignment="Left">
             <TextBlock
                 Style="{StaticResource TitleTextBlockStyle}"
                 Text="{x:Bind Title, Mode=OneTime}" />
 
-            <!-- 外观 / 主题 -->
-            <StackPanel Spacing="8">
-                <TextBlock
-                    Style="{StaticResource SubtitleTextBlockStyle}"
-                    Text="{x:Bind AppearanceLabel, Mode=OneTime}" />
+            <!-- 外观分类标题 -->
+            <TextBlock
+                Style="{StaticResource SubtitleTextBlockStyle}"
+                Text="{x:Bind AppearanceLabel, Mode=OneTime}" />
 
-                <TextBlock
-                    Style="{StaticResource BodyTextBlockStyle}"
-                    Text="{x:Bind ThemeLabel, Mode=OneTime}" />
-
+            <!-- 主题：SettingsCard + 内嵌 RadioButtons -->
+            <toolkit:SettingsCard
+                Header="{x:Bind ThemeLabel, Mode=OneTime}"
+                Description="{x:Bind ThemeDescription, Mode=OneTime}">
                 <RadioButtons
                     x:Name="ThemeSelector"
-                    Header="{x:Bind ThemeLabel, Mode=OneTime}"
                     SelectionChanged="ThemeSelector_SelectionChanged">
                     <RadioButton
                         x:Name="ThemeSystem"
@@ -41,7 +40,29 @@
                         Content="{x:Bind ThemeDarkLabel, Mode=OneTime}"
                         Tag="Dark" />
                 </RadioButtons>
-            </StackPanel>
+            </toolkit:SettingsCard>
+
+            <!-- SettingsExpander：预留更多外观项（后续开关） -->
+            <toolkit:SettingsExpander
+                Header="{x:Bind AppearanceMoreLabel, Mode=OneTime}"
+                Description="{x:Bind AppearanceMoreDescription, Mode=OneTime}"
+                IsExpanded="False">
+                <toolkit:SettingsExpander.Items>
+                    <toolkit:SettingsCard
+                        Header="{x:Bind MicaLabel, Mode=OneTime}"
+                        Description="{x:Bind MicaDescription, Mode=OneTime}">
+                        <ToggleSwitch
+                            x:Name="MicaToggle"
+                            IsOn="True"
+                            Toggled="MicaToggle_Toggled" />
+                    </toolkit:SettingsCard>
+                    <toolkit:SettingsCard
+                        Header="{x:Bind PlayBarLabel, Mode=OneTime}"
+                        Description="{x:Bind PlayBarDescription, Mode=OneTime}">
+                        <ToggleSwitch x:Name="PlayBarToggle" IsOn="True" />
+                    </toolkit:SettingsCard>
+                </toolkit:SettingsExpander.Items>
+            </toolkit:SettingsExpander>
         </StackPanel>
     </ScrollViewer>
 </Page>
