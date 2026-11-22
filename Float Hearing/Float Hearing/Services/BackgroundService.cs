@@ -171,10 +171,24 @@ public sealed class BackgroundService
 
     private void DisposeAcrylic(Window window)
     {
-        if (_acrylicBackdrops.Remove(window, out var old))
+        if (!_acrylicBackdrops.Remove(window, out var old))
         {
-            old.Dispose();
+            return;
         }
+
+        // 先断开（触发 OnTargetDisconnected 单次 Remove），再 Dispose 控制器
+        try
+        {
+            if (ReferenceEquals(window.SystemBackdrop, old))
+            {
+                window.SystemBackdrop = null;
+            }
+        }
+        catch (Exception)
+        {
+        }
+
+        old.Dispose();
     }
 
     /// <summary>自定义亚克力着色层（配合 DesktopAcrylic 模糊）。</summary>

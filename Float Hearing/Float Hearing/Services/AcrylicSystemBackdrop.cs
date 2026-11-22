@@ -7,7 +7,7 @@ namespace Float_Hearing.Services;
 
 /// <summary>
 /// 基于 DesktopAcrylicController 的系统亚克力（Base / Thin / Default）。
-/// XAML DesktopAcrylicBackdrop 本版本无 Kind，故用 Composition 控制器。
+/// 关闭/切换时避免 Dispose 与 OnTargetDisconnected 双重 RemoveSystemBackdropTarget。
 /// </summary>
 internal sealed class AcrylicSystemBackdrop : SystemBackdrop, IDisposable
 {
@@ -15,6 +15,7 @@ internal sealed class AcrylicSystemBackdrop : SystemBackdrop, IDisposable
     private readonly SystemBackdropConfiguration _configuration = new();
     private ICompositionSupportsSystemBackdrop? _target;
     private Window? _window;
+    private bool _targetAttached;
     private bool _disposed;
 
     public DesktopAcrylicKind Kind { get; set; } = DesktopAcrylicKind.Default;
@@ -22,29 +23,44 @@ internal sealed class AcrylicSystemBackdrop : SystemBackdrop, IDisposable
     protected override void OnTargetConnected(ICompositionSupportsSystemBackdrop target, XamlRoot xamlRoot)
     {
         base.OnTargetConnected(target, xamlRoot);
+        if (_disposed)
+        {
+            return;
+        }
+
         _target = target;
         _controller.Kind = Kind;
         _configuration.IsInputActive = true;
         _controller.AddSystemBackdropTarget(target);
         _controller.SetSystemBackdropConfiguration(_configuration);
+        _targetAttached = true;
     }
 
     protected override void OnTargetDisconnected(ICompositionSupportsSystemBackdrop target)
     {
-        try
+        // 仅在此路径移除一次；Dispose 不再重复 Remove
+        if (_targetAttached && !_disposed)
         {
-            _controller.RemoveSystemBackdropTarget(target);
-        }
-        catch
-        {
-        }
+            try
+            {
+                _controller.RemoveSystemBackdropTarget(target);
+            }
+            catch (Exception)
+            {
+                // 已移除/目标已失效
+            }
 
-        if (ReferenceEquals(_target, target))
-        {
+            _targetAttached = false;
             _target = null;
         }
 
-        base.OnTargetDisconnected(target);
+        try
+        {
+            base.OnTargetDisconnected(target);
+        }
+        catch (Exception)
+        {
+        }
     }
 
     public void Attach(Window window)
@@ -52,16 +68,35 @@ internal sealed class AcrylicSystemBackdrop : SystemBackdrop, IDisposable
         _window = window;
         window.Activated += Window_Activated;
         window.Closed += Window_Closed;
-        // 若窗口已激活，先同步一次
         _configuration.IsInputActive = true;
     }
 
     private void Window_Activated(object sender, WindowActivatedEventArgs args)
     {
+        if (_disposed)
+        {
+            return;
+        }
+
         _configuration.IsInputActive = args.WindowActivationState != WindowActivationState.Deactivated;
     }
 
-    private void Window_Closed(object sender, WindowEventArgs args) => Dispose();
+    private void Window_Closed(object sender, WindowEventArgs args)
+    {
+        // 先摘掉 SystemBackdrop，让框架先走 OnTargetDisconnected，再 Dispose 控制器
+        try
+        {
+            if (_window?.SystemBackdrop == this)
+            {
+                _window.SystemBackdrop = null;
+            }
+        }
+        catch (Exception)
+        {
+        }
+
+        Dispose();
+    }
 
     public void Dispose()
     {
@@ -79,32 +114,41 @@ internal sealed class AcrylicSystemBackdrop : SystemBackdrop, IDisposable
             _window = null;
         }
 
-        try
+        // 若仍挂着 target（框架尚未 Disconnect），此处 Remove；否则交给 OnTargetDisconnected
+        if (_targetAttached && _target is not null)
         {
-            if (_target is not null)
+            try
             {
                 _controller.RemoveSystemBackdropTarget(_target);
-                _target = null;
+            }
+            catch (Exception)
+            {
             }
 
+            _targetAttached = false;
+            _target = null;
+        }
+
+        try
+        {
             _controller.Dispose();
         }
-        catch
+        catch (Exception)
         {
         }
     }
 }
 
-/// <summary>强类型 Mica Kind，避免反射失败导致 Alt 无效。</summary>
+/// <summary>强类型 Mica Kind（Base / BaseAlt），避免反射失败。</summary>
 internal static class BackdropFactory
 {
     public static SystemBackdrop CreateMica(bool alt) => new MicaBackdrop
     {
-        // 注意：枚举是 Base / BaseAlt，不是 Alt
+        // 枚举是 Base / BaseAlt，不是 Alt
         Kind = alt ? MicaKind.BaseAlt : MicaKind.Base,
     };
 
-    public static SystemBackdrop CreateAcrylic(DesktopAcrylicKind kind, Window window)
+    public static AcrylicSystemBackdrop CreateAcrylic(DesktopAcrylicKind kind, Window window)
     {
         var backdrop = new AcrylicSystemBackdrop { Kind = kind };
         backdrop.Attach(window);
