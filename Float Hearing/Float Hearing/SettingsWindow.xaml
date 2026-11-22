@@ -6,47 +6,53 @@
     xmlns:pages="using:Float_Hearing.Pages"
     Title="Float Hearing">
 
-    <Window.SystemBackdrop>
-        <MicaBackdrop />
-    </Window.SystemBackdrop>
+    <!-- 背景由 BackgroundService 管理；默认无 SystemBackdrop 由其设置 -->
+    <Grid x:Name="RootGrid">
+        <Grid x:Name="ShellGrid" RowSpacing="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+            <!-- 与主窗口一致：Tall TitleBar + 返回 + 导航折叠 + 图标 -->
+            <TitleBar
+                x:Name="SettingsTitleBar"
+                Grid.Row="0"
+                Title="Float Hearing"
+                IsBackButtonVisible="True"
+                IsPaneToggleButtonVisible="True"
+                BackRequested="SettingsTitleBar_BackRequested"
+                PaneToggleRequested="SettingsTitleBar_PaneToggleRequested">
+                <TitleBar.IconSource>
+                    <ImageIconSource ImageSource="ms-appx:///AppIcon.ico" />
+                </TitleBar.IconSource>
+            </TitleBar>
 
-        <TitleBar
-            x:Name="SettingsTitleBar"
-            Grid.Row="0"
-            Title="Float Hearing"
-            IsBackButtonVisible="False"
-            IsPaneToggleButtonVisible="False" />
+            <NavigationView
+                x:Name="SettingsNav"
+                Grid.Row="1"
+                IsBackButtonVisible="Collapsed"
+                IsPaneToggleButtonVisible="False"
+                IsSettingsVisible="False"
+                OpenPaneLength="240"
+                PaneDisplayMode="Left"
+                IsPaneOpen="True"
+                Loaded="SettingsNav_Loaded">
 
-        <NavigationView
-            x:Name="SettingsNav"
-            Grid.Row="1"
-            IsBackButtonVisible="Collapsed"
-            IsPaneToggleButtonVisible="False"
-            IsSettingsVisible="False"
-            OpenPaneLength="240"
-            PaneDisplayMode="Left"
-            IsPaneOpen="True"
-            Loaded="SettingsNav_Loaded">
+                <NavigationView.MenuItems>
+                    <NavigationViewItem
+                        x:Name="NavAppearance"
+                        Content="外观"
+                        Tag="Appearance"
+                        IsSelected="True">
+                        <NavigationViewItem.Icon>
+                            <FontIcon Glyph="&#xE706;" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                </NavigationView.MenuItems>
 
-            <NavigationView.MenuItems>
-                <NavigationViewItem
-                    x:Name="NavAppearance"
-                    Content="外观"
-                    Tag="Appearance"
-                    IsSelected="True">
-                    <NavigationViewItem.Icon>
-                        <FontIcon Glyph="&#xE706;" />
-                    </NavigationViewItem.Icon>
-                </NavigationViewItem>
-            </NavigationView.MenuItems>
-
-            <Frame x:Name="SettingsFrame" />
-        </NavigationView>
+                <Frame x:Name="SettingsFrame" />
+            </NavigationView>
+        </Grid>
     </Grid>
 </Window>

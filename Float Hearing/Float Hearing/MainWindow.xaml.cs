@@ -68,7 +68,16 @@ public sealed partial class MainWindow : Window
         Title = AppTitle;
 
         PlaylistStore.Items.CollectionChanged += (_, _) => RebuildPlaylistNavItems();
+        BackgroundService.Instance.ApplyTo(this);
+        BackgroundService.Instance.BackgroundChanged += OnBackgroundChanged;
+        Closed += (_, _) =>
+        {
+            BackgroundService.Instance.BackgroundChanged -= OnBackgroundChanged;
+        };
     }
+
+    private void OnBackgroundChanged(object? sender, EventArgs e)
+        => BackgroundService.Instance.ApplyTo(this);
 
     public string AppTitle { get; }
     public string SearchPlaceholder { get; }
@@ -92,7 +101,7 @@ public sealed partial class MainWindow : Window
     public string MenuRename { get; }
     public string MenuDelete { get; }
 
-    private void RootNav_Loaded(object sender, RoutedEventArgs e)
+    private async void RootNav_Loaded(object sender, RoutedEventArgs e)
     {
         if (_navInitialized)
         {
@@ -101,6 +110,10 @@ public sealed partial class MainWindow : Window
 
         _navInitialized = true;
         RebuildPlaylistNavItems();
+
+        // 应用内 Splash，再进主内容
+        ContentFrame.Navigate(typeof(SplashPage));
+        await Task.Delay(1200);
         ContentFrame.Navigate(typeof(SongsPage));
         UpdateBackButton();
     }

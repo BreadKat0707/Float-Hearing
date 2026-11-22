@@ -225,4 +225,64 @@
   <data name="SettingsThemeDescription" xml:space="preserve">
     <value>選擇應用配色：跟隨系統、淺色或深色</value>
   </data>
+  <data name="BgImage" xml:space="preserve">
+    <value>圖片</value>
+  </data>
+  <data name="BgImageBlur" xml:space="preserve">
+    <value>模糊</value>
+  </data>
+  <data name="BgMica" xml:space="preserve">
+    <value>Mica</value>
+  </data>
+  <data name="BgMicaAlt" xml:space="preserve">
+    <value>Mica Alt</value>
+  </data>
+  <data name="BgAcrylicTint" xml:space="preserve">
+    <value>著色顏色 (#RRGGBB)</value>
+  </data>
+  <data name="BgAcrylicBase" xml:space="preserve">
+    <value>亞克力 Base</value>
+  </data>
+  <data name="BgSolidColor" xml:space="preserve">
+    <value>純色顏色 (#RRGGBB)</value>
+  </data>
+  <data name="BgSolid" xml:space="preserve">
+    <value>純色</value>
+  </data>
+  <data name="BgAcrylicDefault" xml:space="preserve">
+    <value>亞克力 預設</value>
+  </data>
+  <data name="BgFluid" xml:space="preserve">
+    <value>流體（佔位）</value>
+  </data>
+  <data name="BgAcrylicLuminosity" xml:space="preserve">
+    <value>亮度混合</value>
+  </data>
+  <data name="BgAcrylicThin" xml:space="preserve">
+    <value>亞克力 Thin</value>
+  </data>
+  <data name="BgImageDim" xml:space="preserve">
+    <value>壓暗</value>
+  </data>
+  <data name="BgAcrylicCustom" xml:space="preserve">
+    <value>亞克力 自訂</value>
+  </data>
+  <data name="BgPickImage" xml:space="preserve">
+    <value>選擇圖片…</value>
+  </data>
+  <data name="BgImagePath" xml:space="preserve">
+    <value>背景圖片</value>
+  </data>
+  <data name="BgSection" xml:space="preserve">
+    <value>背景</value>
+  </data>
+  <data name="BgMode" xml:space="preserve">
+    <value>背景類型</value>
+  </data>
+  <data name="BgAcrylicTintOpacity" xml:space="preserve">
+    <value>著色不透明度</value>
+  </data>
+  <data name="BgSectionDescription" xml:space="preserve">
+    <value>視窗背景材質與自訂圖片</value>
+  </data>
 </root>

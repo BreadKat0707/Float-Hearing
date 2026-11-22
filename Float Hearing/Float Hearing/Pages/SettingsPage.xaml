@@ -9,53 +9,149 @@
     mc:Ignorable="d"
     NavigationCacheMode="Required">
 
-    <ScrollViewer Padding="32,24,32,24">
-        <StackPanel MaxWidth="720" Spacing="16" HorizontalAlignment="Left">
+    <!-- 全宽布局：SettingsCard 随窗口拉伸 -->
+    <ScrollViewer Padding="24,20,24,20">
+        <StackPanel Spacing="16" HorizontalAlignment="Stretch">
             <TextBlock
                 Style="{StaticResource TitleTextBlockStyle}"
                 Text="{x:Bind Title, Mode=OneTime}" />
 
-            <!-- 外观分类标题 -->
             <TextBlock
                 Style="{StaticResource SubtitleTextBlockStyle}"
                 Text="{x:Bind AppearanceLabel, Mode=OneTime}" />
 
-            <!-- 主题：SettingsCard + 内嵌 RadioButtons -->
+            <!-- 主题 -->
             <toolkit:SettingsCard
                 Header="{x:Bind ThemeLabel, Mode=OneTime}"
                 Description="{x:Bind ThemeDescription, Mode=OneTime}">
                 <RadioButtons
                     x:Name="ThemeSelector"
                     SelectionChanged="ThemeSelector_SelectionChanged">
-                    <RadioButton
-                        x:Name="ThemeSystem"
-                        Content="{x:Bind ThemeSystemLabel, Mode=OneTime}"
-                        Tag="System" />
-                    <RadioButton
-                        x:Name="ThemeLight"
-                        Content="{x:Bind ThemeLightLabel, Mode=OneTime}"
-                        Tag="Light" />
-                    <RadioButton
-                        x:Name="ThemeDark"
-                        Content="{x:Bind ThemeDarkLabel, Mode=OneTime}"
-                        Tag="Dark" />
+                    <RadioButton Content="{x:Bind ThemeSystemLabel, Mode=OneTime}" Tag="System" />
+                    <RadioButton Content="{x:Bind ThemeLightLabel, Mode=OneTime}" Tag="Light" />
+                    <RadioButton Content="{x:Bind ThemeDarkLabel, Mode=OneTime}" Tag="Dark" />
                 </RadioButtons>
             </toolkit:SettingsCard>
 
-            <!-- SettingsExpander：预留更多外观项（后续开关） -->
+            <!-- 背景类型 -->
+            <toolkit:SettingsExpander
+                Header="{x:Bind BackgroundLabel, Mode=OneTime}"
+                Description="{x:Bind BackgroundDescription, Mode=OneTime}"
+                IsExpanded="True">
+                <toolkit:SettingsExpander.Items>
+                    <toolkit:SettingsCard Header="{x:Bind BackgroundModeLabel, Mode=OneTime}">
+                        <ComboBox
+                            x:Name="BackgroundModeSelector"
+                            MinWidth="200"
+                            HorizontalAlignment="Right"
+                            SelectionChanged="BackgroundModeSelector_SelectionChanged">
+                            <ComboBoxItem Content="{x:Bind BgSolid, Mode=OneTime}" Tag="Solid" />
+                            <ComboBoxItem Content="{x:Bind BgMica, Mode=OneTime}" Tag="Mica" />
+                            <ComboBoxItem Content="{x:Bind BgMicaAlt, Mode=OneTime}" Tag="MicaAlt" />
+                            <ComboBoxItem Content="{x:Bind BgAcrylicBase, Mode=OneTime}" Tag="AcrylicBase" />
+                            <ComboBoxItem Content="{x:Bind BgAcrylicThin, Mode=OneTime}" Tag="AcrylicThin" />
+                            <ComboBoxItem Content="{x:Bind BgAcrylicDefault, Mode=OneTime}" Tag="AcrylicDefault" />
+                            <ComboBoxItem Content="{x:Bind BgAcrylicCustom, Mode=OneTime}" Tag="AcrylicCustom" />
+                            <ComboBoxItem Content="{x:Bind BgFluid, Mode=OneTime}" Tag="Fluid" />
+                            <ComboBoxItem Content="{x:Bind BgImage, Mode=OneTime}" Tag="Image" />
+                        </ComboBox>
+                    </toolkit:SettingsCard>
+
+                    <!-- Solid 颜色 -->
+                    <toolkit:SettingsCard
+                        x:Name="CardSolidColor"
+                        Header="{x:Bind BgSolidColor, Mode=OneTime}">
+                        <TextBox
+                            x:Name="SolidColorBox"
+                            Width="120"
+                            HorizontalAlignment="Right"
+                            TextChanged="SolidColorBox_TextChanged" />
+                    </toolkit:SettingsCard>
+
+                    <!-- Acrylic Custom 参数 -->
+                    <toolkit:SettingsCard
+                        x:Name="CardAcrylicTint"
+                        Header="{x:Bind BgAcrylicTint, Mode=OneTime}">
+                        <TextBox
+                            x:Name="AcrylicTintBox"
+                            Width="120"
+                            HorizontalAlignment="Right"
+                            TextChanged="AcrylicTintBox_TextChanged" />
+                    </toolkit:SettingsCard>
+                    <toolkit:SettingsCard
+                        x:Name="CardAcrylicOpacity"
+                        Header="{x:Bind BgAcrylicTintOpacity, Mode=OneTime}">
+                        <Slider
+                            x:Name="AcrylicOpacitySlider"
+                            Width="200"
+                            Minimum="0"
+                            Maximum="1"
+                            StepFrequency="0.05"
+                            HorizontalAlignment="Right"
+                            ValueChanged="AcrylicOpacitySlider_ValueChanged" />
+                    </toolkit:SettingsCard>
+                    <toolkit:SettingsCard
+                        x:Name="CardAcrylicLum"
+                        Header="{x:Bind BgAcrylicLuminosity, Mode=OneTime}">
+                        <Slider
+                            x:Name="AcrylicLumSlider"
+                            Width="200"
+                            Minimum="0"
+                            Maximum="1"
+                            StepFrequency="0.05"
+                            HorizontalAlignment="Right"
+                            ValueChanged="AcrylicLumSlider_ValueChanged" />
+                    </toolkit:SettingsCard>
+
+                    <!-- 图片：路径 / dim / blur -->
+                    <toolkit:SettingsCard
+                        x:Name="CardImagePath"
+                        Header="{x:Bind BgImagePath, Mode=OneTime}">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <Button
+                                Content="{x:Bind BgPickImage, Mode=OneTime}"
+                                Click="PickImage_Click" />
+                            <TextBlock
+                                x:Name="ImagePathText"
+                                VerticalAlignment="Center"
+                                Opacity="0.7"
+                                TextTrimming="CharacterEllipsis"
+                                MaxWidth="360" />
+                        </StackPanel>
+                    </toolkit:SettingsCard>
+                    <toolkit:SettingsCard
+                        x:Name="CardImageDim"
+                        Header="{x:Bind BgImageDim, Mode=OneTime}">
+                        <Slider
+                            x:Name="ImageDimSlider"
+                            Width="200"
+                            Minimum="0"
+                            Maximum="1"
+                            StepFrequency="0.05"
+                            HorizontalAlignment="Right"
+                            ValueChanged="ImageDimSlider_ValueChanged" />
+                    </toolkit:SettingsCard>
+                    <toolkit:SettingsCard
+                        x:Name="CardImageBlur"
+                        Header="{x:Bind BgImageBlur, Mode=OneTime}">
+                        <Slider
+                            x:Name="ImageBlurSlider"
+                            Width="200"
+                            Minimum="0"
+                            Maximum="50"
+                            StepFrequency="1"
+                            HorizontalAlignment="Right"
+                            ValueChanged="ImageBlurSlider_ValueChanged" />
+                    </toolkit:SettingsCard>
+                </toolkit:SettingsExpander.Items>
+            </toolkit:SettingsExpander>
+
+            <!-- 其它外观 -->
             <toolkit:SettingsExpander
                 Header="{x:Bind AppearanceMoreLabel, Mode=OneTime}"
                 Description="{x:Bind AppearanceMoreDescription, Mode=OneTime}"
                 IsExpanded="False">
                 <toolkit:SettingsExpander.Items>
-                    <toolkit:SettingsCard
-                        Header="{x:Bind MicaLabel, Mode=OneTime}"
-                        Description="{x:Bind MicaDescription, Mode=OneTime}">
-                        <ToggleSwitch
-                            x:Name="MicaToggle"
-                            IsOn="True"
-                            Toggled="MicaToggle_Toggled" />
-                    </toolkit:SettingsCard>
                     <toolkit:SettingsCard
                         Header="{x:Bind PlayBarLabel, Mode=OneTime}"
                         Description="{x:Bind PlayBarDescription, Mode=OneTime}">

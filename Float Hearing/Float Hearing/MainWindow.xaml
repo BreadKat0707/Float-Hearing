@@ -14,20 +14,22 @@
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
-    <Grid x:Name="RootGrid" RowSpacing="0">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <!-- 背景层由 BackgroundService 插入 RootGrid 子级；ShellGrid 承载界面 -->
+    <Grid x:Name="RootGrid">
+        <Grid x:Name="ShellGrid" RowSpacing="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <!-- 内置 TitleBar：返回/折叠为默认样式-->
-        <TitleBar
-            x:Name="AppTitleBar"
-            Grid.Row="0"
-            Title="{x:Bind AppTitle, Mode=OneTime}"
-            IsBackButtonVisible="True"
-            IsPaneToggleButtonVisible="True"
+            <!-- 内置 TitleBar：返回/折叠为默认样式-->
+            <TitleBar
+                x:Name="AppTitleBar"
+                Grid.Row="0"
+                Title="{x:Bind AppTitle, Mode=OneTime}"
+                IsBackButtonVisible="True"
+                IsPaneToggleButtonVisible="True"
             BackRequested="AppTitleBar_BackRequested"
             PaneToggleRequested="AppTitleBar_PaneToggleRequested">
             <TitleBar.IconSource>
@@ -184,5 +186,6 @@
 
         <!-- 底部 PlayBar -->
         <controls:PlayBar x:Name="PlayBar" Grid.Row="2" />
+        </Grid>
     </Grid>
 </Window>

@@ -225,4 +225,64 @@
   <data name="SettingsThemeDescription" xml:space="preserve">
     <value>테마 선택: 시스템 / 라이트 / 다크</value>
   </data>
+  <data name="BgImage" xml:space="preserve">
+    <value>이미지</value>
+  </data>
+  <data name="BgImageBlur" xml:space="preserve">
+    <value>블러</value>
+  </data>
+  <data name="BgMica" xml:space="preserve">
+    <value>Mica</value>
+  </data>
+  <data name="BgMicaAlt" xml:space="preserve">
+    <value>Mica Alt</value>
+  </data>
+  <data name="BgAcrylicTint" xml:space="preserve">
+    <value>틴트 색 (#RRGGBB)</value>
+  </data>
+  <data name="BgAcrylicBase" xml:space="preserve">
+    <value>아크릴 Base</value>
+  </data>
+  <data name="BgSolidColor" xml:space="preserve">
+    <value>단색 (#RRGGBB)</value>
+  </data>
+  <data name="BgSolid" xml:space="preserve">
+    <value>단색</value>
+  </data>
+  <data name="BgAcrylicDefault" xml:space="preserve">
+    <value>아크릴 기본</value>
+  </data>
+  <data name="BgFluid" xml:space="preserve">
+    <value>유체(자리 표시자)</value>
+  </data>
+  <data name="BgAcrylicLuminosity" xml:space="preserve">
+    <value>휘도</value>
+  </data>
+  <data name="BgAcrylicThin" xml:space="preserve">
+    <value>아크릴 Thin</value>
+  </data>
+  <data name="BgImageDim" xml:space="preserve">
+    <value>어둡게</value>
+  </data>
+  <data name="BgAcrylicCustom" xml:space="preserve">
+    <value>아크릴 사용자 지정</value>
+  </data>
+  <data name="BgPickImage" xml:space="preserve">
+    <value>이미지 선택…</value>
+  </data>
+  <data name="BgImagePath" xml:space="preserve">
+    <value>배경 이미지</value>
+  </data>
+  <data name="BgSection" xml:space="preserve">
+    <value>배경</value>
+  </data>
+  <data name="BgMode" xml:space="preserve">
+    <value>배경 유형</value>
+  </data>
+  <data name="BgAcrylicTintOpacity" xml:space="preserve">
+    <value>틴트 불투명도</value>
+  </data>
+  <data name="BgSectionDescription" xml:space="preserve">
+    <value>창 배경 및 사용자 지정 이미지</value>
+  </data>
 </root>

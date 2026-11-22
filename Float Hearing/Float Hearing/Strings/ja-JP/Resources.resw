@@ -225,4 +225,64 @@
   <data name="SettingsThemeDescription" xml:space="preserve">
     <value>テーマを選択：システムに合わせる / ライト / ダーク</value>
   </data>
+  <data name="BgImage" xml:space="preserve">
+    <value>画像</value>
+  </data>
+  <data name="BgMicaAlt" xml:space="preserve">
+    <value>Mica Alt</value>
+  </data>
+  <data name="BgImageBlur" xml:space="preserve">
+    <value>ぼかし</value>
+  </data>
+  <data name="BgMica" xml:space="preserve">
+    <value>Mica</value>
+  </data>
+  <data name="BgAcrylicBase" xml:space="preserve">
+    <value>アクリル Base</value>
+  </data>
+  <data name="BgAcrylicTint" xml:space="preserve">
+    <value>ティント色 (#RRGGBB)</value>
+  </data>
+  <data name="BgPickImage" xml:space="preserve">
+    <value>画像を選択…</value>
+  </data>
+  <data name="BgSolidColor" xml:space="preserve">
+    <value>単色 (#RRGGBB)</value>
+  </data>
+  <data name="BgSolid" xml:space="preserve">
+    <value>単色</value>
+  </data>
+  <data name="BgAcrylicDefault" xml:space="preserve">
+    <value>アクリル デフォルト</value>
+  </data>
+  <data name="BgFluid" xml:space="preserve">
+    <value>Fluid（プレースホルダ）</value>
+  </data>
+  <data name="BgAcrylicLuminosity" xml:space="preserve">
+    <value>輝度</value>
+  </data>
+  <data name="BgAcrylicThin" xml:space="preserve">
+    <value>アクリル Thin</value>
+  </data>
+  <data name="BgImageDim" xml:space="preserve">
+    <value>暗転</value>
+  </data>
+  <data name="BgAcrylicCustom" xml:space="preserve">
+    <value>アクリル カスタム</value>
+  </data>
+  <data name="BgImagePath" xml:space="preserve">
+    <value>背景画像</value>
+  </data>
+  <data name="BgSection" xml:space="preserve">
+    <value>背景</value>
+  </data>
+  <data name="BgMode" xml:space="preserve">
+    <value>背景タイプ</value>
+  </data>
+  <data name="BgAcrylicTintOpacity" xml:space="preserve">
+    <value>ティント不透明度</value>
+  </data>
+  <data name="BgSectionDescription" xml:space="preserve">
+    <value>ウィンドウの背景とカスタム画像</value>
+  </data>
 </root>

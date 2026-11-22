@@ -270,4 +270,64 @@
   <data name="SettingsThemeDescription" xml:space="preserve">
     <value>Choose app theme: follow system, light, or dark</value>
   </data>
+  <data name="BgImage" xml:space="preserve">
+    <value>Image</value>
+  </data>
+  <data name="BgImageBlur" xml:space="preserve">
+    <value>Blur</value>
+  </data>
+  <data name="BgMica" xml:space="preserve">
+    <value>Mica</value>
+  </data>
+  <data name="BgMicaAlt" xml:space="preserve">
+    <value>Mica Alt</value>
+  </data>
+  <data name="BgAcrylicTint" xml:space="preserve">
+    <value>Tint color (#RRGGBB)</value>
+  </data>
+  <data name="BgAcrylicBase" xml:space="preserve">
+    <value>Acrylic Base</value>
+  </data>
+  <data name="BgSolidColor" xml:space="preserve">
+    <value>Solid color (#RRGGBB)</value>
+  </data>
+  <data name="BgSolid" xml:space="preserve">
+    <value>Solid</value>
+  </data>
+  <data name="BgAcrylicDefault" xml:space="preserve">
+    <value>Acrylic Default</value>
+  </data>
+  <data name="BgFluid" xml:space="preserve">
+    <value>Fluid (placeholder)</value>
+  </data>
+  <data name="BgAcrylicLuminosity" xml:space="preserve">
+    <value>Luminosity</value>
+  </data>
+  <data name="BgAcrylicThin" xml:space="preserve">
+    <value>Acrylic Thin</value>
+  </data>
+  <data name="BgImageDim" xml:space="preserve">
+    <value>Dim</value>
+  </data>
+  <data name="BgAcrylicCustom" xml:space="preserve">
+    <value>Acrylic Custom</value>
+  </data>
+  <data name="BgPickImage" xml:space="preserve">
+    <value>Choose image…</value>
+  </data>
+  <data name="BgImagePath" xml:space="preserve">
+    <value>Background image</value>
+  </data>
+  <data name="BgSection" xml:space="preserve">
+    <value>Background</value>
+  </data>
+  <data name="BgMode" xml:space="preserve">
+    <value>Background type</value>
+  </data>
+  <data name="BgAcrylicTintOpacity" xml:space="preserve">
+    <value>Tint opacity</value>
+  </data>
+  <data name="BgSectionDescription" xml:space="preserve">
+    <value>Window backdrop and custom image</value>
+  </data>
 </root>

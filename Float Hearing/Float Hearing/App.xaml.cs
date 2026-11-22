@@ -78,6 +78,7 @@ public partial class App : Application
         _window.Activate();
 
         Theme.Initialize();
+        BackgroundService.Instance.Initialize();
     }
 }
 
