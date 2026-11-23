@@ -21,9 +21,27 @@ public sealed partial class MainWindow : Window
 {
     private const string PlaylistTagPrefix = "Playlist:";
 
+    /// <summary>窗口最小尺寸（用户指定）。</summary>
+    private const int MinWidth = 500;
+    private const int MinHeight = 500;
+
+    /// <summary>宽度低于此值自动收折侧栏。</summary>
+    private const int PaneCollapseWidth = 860;
+
+    /// <summary>标题栏命令钮宽度（溢出计算用）。</summary>
+    private const int CommandButtonWidth = 40;
+
+    /// <summary>左侧标题栏 chrome 约估（返回+折叠+图标+标题）。</summary>
+    private const int TitleBarLeftChrome = 220;
+
+    /// <summary>右侧三大金刚约估宽度。</summary>
+    private const int CaptionButtonsWidth = 140;
+
     private SettingsWindow? _settingsWindow;
     private bool _navInitialized;
+    private bool _autoCollapsedPane;
     private NavigationViewItem? _draggingPlaylistItem;
+    private bool _clampingSize;
 
     public MainWindow()
     {
@@ -47,6 +65,7 @@ public sealed partial class MainWindow : Window
         NavSettings = Loc.Get("NavSettings");
         NavMusicLibrary = Loc.Get("MusicLibraryTitle");
         NavMusicRefresh = Loc.Get("MusicLibraryRefresh");
+        TitleBarMore = Loc.Get("TitleBarMore");
         MenuPlay = Loc.Get("PlaylistMenuPlay");
         MenuRename = Loc.Get("PlaylistMenuRename");
         MenuDelete = Loc.Get("PlaylistMenuDelete");
@@ -58,10 +77,14 @@ public sealed partial class MainWindow : Window
         // Toolkit TitleBar：AutoConfigure 会处理 ExtendsContentIntoTitleBar + SetTitleBar
         // 高度由 DisplayMode=Tall 控制；勿再设 PreferredHeightOption（与 AutoConfigure 冲突 → 0x8007139F）
         AppTitleBar.Window = this;
+        AppTitleBar.SizeChanged += AppTitleBar_SizeChanged;
 
         if (AppWindow is not null)
         {
             AppWindow.SetIcon("AppIcon.ico");
+            AppWindow.Changed += AppWindow_Changed;
+            // 初始钳制
+            ClampMinSize();
         }
 
         Title = AppTitle;
@@ -83,9 +106,6 @@ public sealed partial class MainWindow : Window
         };
     }
 
-    private void OnBackgroundChanged(object? sender, EventArgs e)
-        => BackgroundService.Instance.ApplyTo(this);
-
     public string AppTitle { get; }
     public string SearchPlaceholder { get; }
     public string NavGroupLibrary { get; }
@@ -104,9 +124,96 @@ public sealed partial class MainWindow : Window
     public string NavSettings { get; }
     public string NavMusicLibrary { get; }
     public string NavMusicRefresh { get; }
+    public string TitleBarMore { get; }
     public string MenuPlay { get; }
     public string MenuRename { get; }
     public string MenuDelete { get; }
+
+    #region Min size / responsive pane / title bar overflow
+
+    private void ClampMinSize()
+    {
+        if (AppWindow is null || _clampingSize)
+        {
+            return;
+        }
+
+        var size = AppWindow.Size;
+        if (size.Width >= MinWidth && size.Height >= MinHeight)
+        {
+            return;
+        }
+
+        _clampingSize = true;
+        try
+        {
+            AppWindow.Resize(new Windows.Graphics.SizeInt32(
+                Math.Max(MinWidth, size.Width),
+                Math.Max(MinHeight, size.Height)));
+        }
+        finally
+        {
+            _clampingSize = false;
+        }
+    }
+
+    private void AppWindow_Changed(AppWindow sender, AppWindowChangedEventArgs args)
+    {
+        if (!args.DidSizeChange)
+        {
+            return;
+        }
+
+        ClampMinSize();
+        UpdateResponsivePane(sender.Size.Width);
+    }
+
+    private void UpdateResponsivePane(int width)
+    {
+        if (width < PaneCollapseWidth)
+        {
+            if (RootNav.IsPaneOpen)
+            {
+                RootNav.IsPaneOpen = false;
+                _autoCollapsedPane = true;
+            }
+        }
+        else if (_autoCollapsedPane)
+        {
+            RootNav.IsPaneOpen = true;
+            _autoCollapsedPane = false;
+        }
+    }
+
+    private void AppTitleBar_SizeChanged(object sender, SizeChangedEventArgs e)
+        => UpdateTitleBarCommandOverflow(e.NewSize.Width);
+
+    /// <summary>
+    /// 标题栏宽度不足时优先保留三大金刚：命令钮收进「更多」。
+    /// Footer 贴 caption 左侧；可用宽度 = 总宽 - 左侧 chrome - 三大金刚。
+    /// </summary>
+    private void UpdateTitleBarCommandOverflow(double titleBarWidth)
+    {
+        var available = titleBarWidth - TitleBarLeftChrome - CaptionButtonsWidth - 8;
+        if (available < 0)
+        {
+            available = 0;
+        }
+
+        var fitCount = (int)(available / CommandButtonWidth);
+        fitCount = Math.Clamp(fitCount, 0, 4);
+
+        var buttons = new[] { BtnMusicLibrary, BtnRefreshLibrary, BtnSleepTimer, BtnSettings };
+        for (var i = 0; i < buttons.Length; i++)
+        {
+            buttons[i].Visibility = i < fitCount ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        // 任一命令钮被藏进 More
+        BtnMore.Visibility = fitCount < 4 ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    #endregion
 
     private void RootNav_Loaded(object sender, RoutedEventArgs e)
     {
@@ -121,6 +228,9 @@ public sealed partial class MainWindow : Window
         ContentFrame.Navigate(typeof(SongsPage));
         UpdateBackButton();
     }
+
+    private void OnBackgroundChanged(object? sender, EventArgs e)
+        => BackgroundService.Instance.ApplyTo(this);
 
     #region TitleBar commands
 

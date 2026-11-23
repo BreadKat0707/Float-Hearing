@@ -330,4 +330,7 @@
   <data name="BgSectionDescription" xml:space="preserve">
     <value>窗口背景材质与自定义图片</value>
   </data>
+  <data name="TitleBarMore" xml:space="preserve">
+    <value>更多</value>
+  </data>
 </root>

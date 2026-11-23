@@ -330,4 +330,7 @@
   <data name="BgSectionDescription" xml:space="preserve">
     <value>Window backdrop and custom image</value>
   </data>
+  <data name="TitleBarMore" xml:space="preserve">
+    <value>More</value>
+  </data>
 </root>
