@@ -176,7 +176,7 @@ public sealed class BackgroundService
             return;
         }
 
-        // 先断开（触发 OnTargetDisconnected 单次 Remove），再 Dispose 控制器
+        // 窗口仍存活时：先断开再 Dispose（切换背景路径）
         try
         {
             if (ReferenceEquals(window.SystemBackdrop, old))
@@ -188,7 +188,20 @@ public sealed class BackgroundService
         {
         }
 
-        old.Dispose();
+        try
+        {
+            old.Dispose();
+        }
+        catch (Exception)
+        {
+        }
+    }
+
+    /// <summary>窗口关闭：从跟踪移除，不触碰组合对象（避免关窗 hresult_error）。</summary>
+    public void OnWindowClosed(Window window)
+    {
+        _acrylicBackdrops.Remove(window);
+        _layers.Remove(window);
     }
 
     /// <summary>自定义亚克力着色层（配合 DesktopAcrylic 模糊）。</summary>

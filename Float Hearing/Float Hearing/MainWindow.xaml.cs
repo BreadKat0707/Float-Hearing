@@ -71,7 +71,15 @@ public sealed partial class MainWindow : Window
         BackgroundService.Instance.BackgroundChanged += OnBackgroundChanged;
         Closed += (_, _) =>
         {
-            BackgroundService.Instance.BackgroundChanged -= OnBackgroundChanged;
+            try
+            {
+                BackgroundService.Instance.BackgroundChanged -= OnBackgroundChanged;
+                BackgroundService.Instance.OnWindowClosed(this);
+            }
+            catch (Exception)
+            {
+                // 关窗清理失败不阻断
+            }
         };
     }
 

@@ -7,7 +7,8 @@ namespace Float_Hearing.Services;
 
 /// <summary>
 /// 基于 DesktopAcrylicController 的系统亚克力（Base / Thin / Default）。
-/// 关闭/切换时避免 Dispose 与 OnTargetDisconnected 双重 RemoveSystemBackdropTarget。
+/// 关窗：只退订事件，不 Remove/Dispose（组合对象随窗口销毁，避免 0xc000 / winrt::hresult_error）。
+/// 切换背景：由 BackgroundService.DisposeAcrylic 先摘 SystemBackdrop 再清理。
 /// </summary>
 internal sealed class AcrylicSystemBackdrop : SystemBackdrop, IDisposable
 {
@@ -17,13 +18,14 @@ internal sealed class AcrylicSystemBackdrop : SystemBackdrop, IDisposable
     private Window? _window;
     private bool _targetAttached;
     private bool _disposed;
+    private bool _closed;
 
     public DesktopAcrylicKind Kind { get; set; } = DesktopAcrylicKind.Default;
 
     protected override void OnTargetConnected(ICompositionSupportsSystemBackdrop target, XamlRoot xamlRoot)
     {
         base.OnTargetConnected(target, xamlRoot);
-        if (_disposed)
+        if (_disposed || _closed)
         {
             return;
         }
@@ -38,7 +40,23 @@ internal sealed class AcrylicSystemBackdrop : SystemBackdrop, IDisposable
 
     protected override void OnTargetDisconnected(ICompositionSupportsSystemBackdrop target)
     {
-        // 仅在此路径移除一次；Dispose 不再重复 Remove
+        // 关窗路径：目标已失效，跳过 Remove，避免 hresult_error
+        if (_closed)
+        {
+            _targetAttached = false;
+            _target = null;
+            try
+            {
+                base.OnTargetDisconnected(target);
+            }
+            catch (Exception)
+            {
+            }
+
+            return;
+        }
+
+        // 切换背景：单次 Remove
         if (_targetAttached && !_disposed)
         {
             try
@@ -47,7 +65,6 @@ internal sealed class AcrylicSystemBackdrop : SystemBackdrop, IDisposable
             }
             catch (Exception)
             {
-                // 已移除/目标已失效
             }
 
             _targetAttached = false;
@@ -73,34 +90,52 @@ internal sealed class AcrylicSystemBackdrop : SystemBackdrop, IDisposable
 
     private void Window_Activated(object sender, WindowActivatedEventArgs args)
     {
-        if (_disposed)
+        if (_disposed || _closed)
         {
             return;
         }
 
-        _configuration.IsInputActive = args.WindowActivationState != WindowActivationState.Deactivated;
-    }
-
-    private void Window_Closed(object sender, WindowEventArgs args)
-    {
-        // 先摘掉 SystemBackdrop，让框架先走 OnTargetDisconnected，再 Dispose 控制器
         try
         {
-            if (_window?.SystemBackdrop == this)
-            {
-                _window.SystemBackdrop = null;
-            }
+            _configuration.IsInputActive = args.WindowActivationState != WindowActivationState.Deactivated;
         }
         catch (Exception)
         {
         }
-
-        Dispose();
     }
 
+    private void Window_Closed(object sender, WindowEventArgs args)
+    {
+        // 关窗：只标记 + 退订。不改 SystemBackdrop、不 Remove、不 Dispose 控制器。
+        if (_closed)
+        {
+            return;
+        }
+
+        _closed = true;
+
+        if (_window is not null)
+        {
+            try
+            {
+                _window.Activated -= Window_Activated;
+                _window.Closed -= Window_Closed;
+            }
+            catch (Exception)
+            {
+            }
+
+            _window = null;
+        }
+
+        _targetAttached = false;
+        _target = null;
+    }
+
+    /// <summary>仅在切换背景、窗口仍存活时调用。</summary>
     public void Dispose()
     {
-        if (_disposed)
+        if (_disposed || _closed)
         {
             return;
         }
@@ -109,12 +144,18 @@ internal sealed class AcrylicSystemBackdrop : SystemBackdrop, IDisposable
 
         if (_window is not null)
         {
-            _window.Activated -= Window_Activated;
-            _window.Closed -= Window_Closed;
+            try
+            {
+                _window.Activated -= Window_Activated;
+                _window.Closed -= Window_Closed;
+            }
+            catch (Exception)
+            {
+            }
+
             _window = null;
         }
 
-        // 若仍挂着 target（框架尚未 Disconnect），此处 Remove；否则交给 OnTargetDisconnected
         if (_targetAttached && _target is not null)
         {
             try
@@ -139,12 +180,11 @@ internal sealed class AcrylicSystemBackdrop : SystemBackdrop, IDisposable
     }
 }
 
-/// <summary>强类型 Mica Kind（Base / BaseAlt），避免反射失败。</summary>
+/// <summary>强类型 Mica Kind（Base / BaseAlt）。</summary>
 internal static class BackdropFactory
 {
     public static SystemBackdrop CreateMica(bool alt) => new MicaBackdrop
     {
-        // 枚举是 Base / BaseAlt，不是 Alt
         Kind = alt ? MicaKind.BaseAlt : MicaKind.Base,
     };
 

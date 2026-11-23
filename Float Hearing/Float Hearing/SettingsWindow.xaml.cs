@@ -49,8 +49,15 @@ public sealed partial class SettingsWindow : Window
         BackgroundService.Instance.BackgroundChanged += OnBackgroundChanged;
         Closed += (_, _) =>
         {
-            BackgroundService.Instance.BackgroundChanged -= OnBackgroundChanged;
-            WindowTracker.Unregister(this);
+            try
+            {
+                BackgroundService.Instance.BackgroundChanged -= OnBackgroundChanged;
+                BackgroundService.Instance.OnWindowClosed(this);
+                WindowTracker.Unregister(this);
+            }
+            catch (Exception)
+            {
+            }
         };
     }
 
