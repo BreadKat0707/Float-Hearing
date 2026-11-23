@@ -21,9 +21,9 @@ public sealed partial class MainWindow : Window
 {
     private const string PlaylistTagPrefix = "Playlist:";
 
-    /// <summary>窗口最小尺寸（用户指定）。</summary>
-    private const int MinWidth = 500;
-    private const int MinHeight = 500;
+    /// <summary>窗口最小尺寸（用户指定 600×600）。</summary>
+    private const int MinWidth = 600;
+    private const int MinHeight = 600;
 
     /// <summary>宽度低于此值自动收折侧栏。</summary>
     private const int PaneCollapseWidth = 860;
