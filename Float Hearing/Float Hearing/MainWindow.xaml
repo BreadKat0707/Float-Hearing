@@ -23,15 +23,16 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!-- 内置 TitleBar：返回/折叠为默认样式-->
+            <!-- 内置 TitleBar：Tall=48，与设置窗一致；返回/折叠为系统样式-->
             <TitleBar
                 x:Name="AppTitleBar"
                 Grid.Row="0"
+                Height="48"
                 Title="{x:Bind AppTitle, Mode=OneTime}"
                 IsBackButtonVisible="True"
                 IsPaneToggleButtonVisible="True"
-            BackRequested="AppTitleBar_BackRequested"
-            PaneToggleRequested="AppTitleBar_PaneToggleRequested">
+                BackRequested="AppTitleBar_BackRequested"
+                PaneToggleRequested="AppTitleBar_PaneToggleRequested">
             <TitleBar.IconSource>
                 <ImageIconSource ImageSource="ms-appx:///AppIcon.ico" />
             </TitleBar.IconSource>

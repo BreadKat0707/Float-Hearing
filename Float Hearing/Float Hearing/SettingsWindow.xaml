@@ -14,10 +14,11 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <!-- 与主窗口一致：Tall TitleBar + 返回 + 导航折叠 + 图标 -->
+            <!-- 与主窗口一致：Tall(48) TitleBar + 返回 + 导航折叠 + 图标 -->
             <TitleBar
                 x:Name="SettingsTitleBar"
                 Grid.Row="0"
+                Height="48"
                 Title="Float Hearing"
                 IsBackButtonVisible="True"
                 IsPaneToggleButtonVisible="True"
