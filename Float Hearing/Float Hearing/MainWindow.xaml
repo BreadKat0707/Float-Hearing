@@ -24,134 +24,133 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!-- Community Toolkit Labs TitleBar：返回/折叠 + Tall + 右侧 Footer 命令 -->
-            <toolkit:TitleBar
-                x:Name="AppTitleBar"
-                Grid.Row="0"
-                Title="{x:Bind AppTitle, Mode=OneTime}"
-                IsBackButtonVisible="True"
-                IsPaneButtonVisible="True"
-                DisplayMode="Tall"
-                AutoConfigureCustomTitleBar="True"
-                BackButtonClick="AppTitleBar_BackButtonClick"
-                PaneButtonClick="AppTitleBar_PaneButtonClick">
-                <toolkit:TitleBar.Icon>
-                    <ImageIcon Source="ms-appx:///AppIcon.ico" />
-                </toolkit:TitleBar.Icon>
-                <!-- 右侧命令区：贴三大金刚；40×40；Margin=0 消除缝 -->
-                <toolkit:TitleBar.Footer>
-                    <StackPanel
-                        x:Name="FooterPanel"
-                        Orientation="Horizontal"
-                        Spacing="0"
+            <!-- 标题栏 + 右侧命令叠层：命令右对齐并避开三大金刚（约 138px） -->
+            <Grid Grid.Row="0">
+                <toolkit:TitleBar
+                    x:Name="AppTitleBar"
+                    Title="{x:Bind AppTitle, Mode=OneTime}"
+                    IsBackButtonVisible="True"
+                    IsPaneButtonVisible="True"
+                    DisplayMode="Tall"
+                    AutoConfigureCustomTitleBar="True"
+                    BackButtonClick="AppTitleBar_BackButtonClick"
+                    PaneButtonClick="AppTitleBar_PaneButtonClick">
+                    <toolkit:TitleBar.Icon>
+                        <ImageIcon Source="ms-appx:///AppIcon.ico" />
+                    </toolkit:TitleBar.Icon>
+                </toolkit:TitleBar>
+
+                <!-- 叠在标题栏右侧：Margin 右=金刚宽，紧贴最小化左侧 -->
+                <StackPanel
+                    x:Name="FooterPanel"
+                    Orientation="Horizontal"
+                    Spacing="0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Margin="0,0,138,0">
+                    <AppBarButton
+                        x:Name="BtnMusicLibrary"
+                        Width="40"
+                        Height="40"
+                        Padding="0"
+                        Margin="0"
+                        MinWidth="40"
+                        MaxWidth="40"
+                        MinHeight="40"
+                        MaxHeight="40"
                         VerticalAlignment="Center"
-                        HorizontalAlignment="Right"
-                        Margin="0,0,-8,0">
-                        <AppBarButton
-                            x:Name="BtnMusicLibrary"
-                            Width="40"
-                            Height="40"
-                            Padding="0"
-                            Margin="0"
-                            MinWidth="40"
-                            MaxWidth="40"
-                            MinHeight="40"
-                            MaxHeight="40"
-                            VerticalAlignment="Center"
-                            Click="BtnMusicLibrary_Click"
-                            ToolTipService.ToolTip="{x:Bind NavMusicLibrary, Mode=OneTime}">
-                            <AppBarButton.Icon>
-                                <FontIcon FontSize="14" Glyph="&#xE8B7;" />
-                            </AppBarButton.Icon>
-                        </AppBarButton>
-                        <AppBarButton
-                            x:Name="BtnRefreshLibrary"
-                            Width="40"
-                            Height="40"
-                            Padding="0"
-                            Margin="0"
-                            MinWidth="40"
-                            MaxWidth="40"
-                            MinHeight="40"
-                            MaxHeight="40"
-                            VerticalAlignment="Center"
-                            Click="BtnRefreshLibrary_Click"
-                            ToolTipService.ToolTip="{x:Bind NavMusicRefresh, Mode=OneTime}">
-                            <AppBarButton.Icon>
-                                <FontIcon FontSize="14" Glyph="&#xE72C;" />
-                            </AppBarButton.Icon>
-                        </AppBarButton>
-                        <AppBarButton
-                            x:Name="BtnSleepTimer"
-                            Width="40"
-                            Height="40"
-                            Padding="0"
-                            Margin="0"
-                            MinWidth="40"
-                            MaxWidth="40"
-                            MinHeight="40"
-                            MaxHeight="40"
-                            VerticalAlignment="Center"
-                            Click="BtnSleepTimer_Click"
-                            ToolTipService.ToolTip="{x:Bind NavSleepTimer, Mode=OneTime}">
-                            <AppBarButton.Icon>
-                                <FontIcon FontSize="14" Glyph="&#xE823;" />
-                            </AppBarButton.Icon>
-                        </AppBarButton>
-                        <AppBarButton
-                            x:Name="BtnSettings"
-                            Width="40"
-                            Height="40"
-                            Padding="0"
-                            Margin="0"
-                            MinWidth="40"
-                            MaxWidth="40"
-                            MinHeight="40"
-                            MaxHeight="40"
-                            VerticalAlignment="Center"
-                            Click="BtnSettings_Click"
-                            ToolTipService.ToolTip="{x:Bind NavSettings, Mode=OneTime}">
-                            <AppBarButton.Icon>
-                                <FontIcon FontSize="14" Glyph="&#xE713;" />
-                            </AppBarButton.Icon>
-                        </AppBarButton>
-                        <!-- 与其它钮同为 AppBarButton，高度/悬停一致；Flyout 无 Split 下拉条 -->
-                        <AppBarButton
-                            x:Name="BtnMore"
-                            Width="40"
-                            Height="40"
-                            Padding="0"
-                            Margin="0"
-                            MinWidth="40"
-                            MaxWidth="40"
-                            MinHeight="40"
-                            MaxHeight="40"
-                            VerticalAlignment="Center"
-                            Visibility="Collapsed"
-                            ToolTipService.ToolTip="{x:Bind TitleBarMore, Mode=OneTime}">
-                            <AppBarButton.Icon>
-                                <FontIcon FontSize="14" Glyph="&#xE712;" />
-                            </AppBarButton.Icon>
-                            <AppBarButton.Flyout>
-                                <MenuFlyout Placement="BottomEdgeAlignedRight">
-                                    <MenuFlyoutItem
-                                        Text="{x:Bind NavMusicLibrary, Mode=OneTime}"
-                                        Click="BtnMusicLibrary_Click" />
-                                    <MenuFlyoutItem
-                                        Text="{x:Bind NavMusicRefresh, Mode=OneTime}"
-                                        Click="BtnRefreshLibrary_Click" />
-                                    <MenuFlyoutItem
-                                        Text="{x:Bind NavSleepTimer, Mode=OneTime}"
-                                        Click="BtnSleepTimer_Click" />
-                                    <MenuFlyoutItem
-                                        Text="{x:Bind NavSettings, Mode=OneTime}"
-                                        Click="BtnSettings_Click" />
-                                </MenuFlyout>
-                            </AppBarButton.Flyout>
-                        </AppBarButton>
-                    </StackPanel>
-                </toolkit:TitleBar.Footer>
-            </toolkit:TitleBar>
+                        Click="BtnMusicLibrary_Click"
+                        ToolTipService.ToolTip="{x:Bind NavMusicLibrary, Mode=OneTime}">
+                        <AppBarButton.Icon>
+                            <FontIcon FontSize="14" Glyph="&#xE8B7;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton
+                        x:Name="BtnRefreshLibrary"
+                        Width="40"
+                        Height="40"
+                        Padding="0"
+                        Margin="0"
+                        MinWidth="40"
+                        MaxWidth="40"
+                        MinHeight="40"
+                        MaxHeight="40"
+                        VerticalAlignment="Center"
+                        Click="BtnRefreshLibrary_Click"
+                        ToolTipService.ToolTip="{x:Bind NavMusicRefresh, Mode=OneTime}">
+                        <AppBarButton.Icon>
+                            <FontIcon FontSize="14" Glyph="&#xE72C;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton
+                        x:Name="BtnSleepTimer"
+                        Width="40"
+                        Height="40"
+                        Padding="0"
+                        Margin="0"
+                        MinWidth="40"
+                        MaxWidth="40"
+                        MinHeight="40"
+                        MaxHeight="40"
+                        VerticalAlignment="Center"
+                        Click="BtnSleepTimer_Click"
+                        ToolTipService.ToolTip="{x:Bind NavSleepTimer, Mode=OneTime}">
+                        <AppBarButton.Icon>
+                            <FontIcon FontSize="14" Glyph="&#xE823;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton
+                        x:Name="BtnSettings"
+                        Width="40"
+                        Height="40"
+                        Padding="0"
+                        Margin="0"
+                        MinWidth="40"
+                        MaxWidth="40"
+                        MinHeight="40"
+                        MaxHeight="40"
+                        VerticalAlignment="Center"
+                        Click="BtnSettings_Click"
+                        ToolTipService.ToolTip="{x:Bind NavSettings, Mode=OneTime}">
+                        <AppBarButton.Icon>
+                            <FontIcon FontSize="14" Glyph="&#xE713;" />
+                        </AppBarButton.Icon>
+                    </AppBarButton>
+                    <AppBarButton
+                        x:Name="BtnMore"
+                        Width="40"
+                        Height="40"
+                        Padding="0"
+                        Margin="0"
+                        MinWidth="40"
+                        MaxWidth="40"
+                        MinHeight="40"
+                        MaxHeight="40"
+                        VerticalAlignment="Center"
+                        Visibility="Collapsed"
+                        ToolTipService.ToolTip="{x:Bind TitleBarMore, Mode=OneTime}">
+                        <AppBarButton.Icon>
+                            <FontIcon FontSize="14" Glyph="&#xE712;" />
+                        </AppBarButton.Icon>
+                        <AppBarButton.Flyout>
+                            <MenuFlyout Placement="BottomEdgeAlignedRight">
+                                <MenuFlyoutItem
+                                    Text="{x:Bind NavMusicLibrary, Mode=OneTime}"
+                                    Click="BtnMusicLibrary_Click" />
+                                <MenuFlyoutItem
+                                    Text="{x:Bind NavMusicRefresh, Mode=OneTime}"
+                                    Click="BtnRefreshLibrary_Click" />
+                                <MenuFlyoutItem
+                                    Text="{x:Bind NavSleepTimer, Mode=OneTime}"
+                                    Click="BtnSleepTimer_Click" />
+                                <MenuFlyoutItem
+                                    Text="{x:Bind NavSettings, Mode=OneTime}"
+                                    Click="BtnSettings_Click" />
+                            </MenuFlyout>
+                        </AppBarButton.Flyout>
+                    </AppBarButton>
+                </StackPanel>
+            </Grid>
 
         <!-- 主内容：NavigationView + 页框 -->
         <NavigationView

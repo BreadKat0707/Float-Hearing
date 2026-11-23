@@ -34,8 +34,8 @@ public sealed partial class MainWindow : Window
     /// <summary>左侧标题栏 chrome 约估（返回+折叠+图标+标题）。</summary>
     private const int TitleBarLeftChrome = 220;
 
-    /// <summary>右侧三大金刚约估宽度。</summary>
-    private const int CaptionButtonsWidth = 140;
+    /// <summary>右侧三大金刚约估宽度（叠层 Margin 右侧预留）。</summary>
+    private const int CaptionButtonsWidth = 138;
 
     private SettingsWindow? _settingsWindow;
     private bool _navInitialized;
