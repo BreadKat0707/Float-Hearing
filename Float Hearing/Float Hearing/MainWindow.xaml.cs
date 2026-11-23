@@ -5,6 +5,7 @@ using Float_Hearing.Services;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
@@ -270,6 +271,34 @@ public sealed partial class MainWindow : Window
         _settingsWindow.Closed += (_, _) => _settingsWindow = null;
         _settingsWindow.Activate();
         _settingsWindow.AppWindow?.MoveInZOrderAtTop();
+    }
+
+    private MenuFlyout? _moreMenu;
+
+    /// <summary>不用 AppBarButton.Flyout（避免模板箭头）；点击时 ShowAt。</summary>
+    private void BtnMore_Click(object sender, RoutedEventArgs e)
+    {
+        _moreMenu ??= BuildMoreMenu();
+        _moreMenu.ShowAt(BtnMore);
+    }
+
+    private MenuFlyout BuildMoreMenu()
+    {
+        var flyout = new MenuFlyout { Placement = FlyoutPlacementMode.BottomEdgeAlignedRight };
+
+        flyout.Items.Add(CreateMoreItem(NavMusicLibrary, "", BtnMusicLibrary_Click));
+        flyout.Items.Add(CreateMoreItem(NavMusicRefresh, "", BtnRefreshLibrary_Click));
+        flyout.Items.Add(CreateMoreItem(NavSleepTimer, "", BtnSleepTimer_Click));
+        flyout.Items.Add(CreateMoreItem(NavSettings, "", BtnSettings_Click));
+        return flyout;
+    }
+
+    private static MenuFlyoutItem CreateMoreItem(string text, string glyph, RoutedEventHandler onClick)
+    {
+        var item = new MenuFlyoutItem { Text = text };
+        item.Icon = new FontIcon { Glyph = glyph, FontSize = 14 };
+        item.Click += onClick;
+        return item;
     }
 
     #endregion
