@@ -4,9 +4,10 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:pages="using:Float_Hearing.Pages"
+    xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
     Title="Float Hearing">
 
-    <!-- 背景由 BackgroundService 管理；默认无 SystemBackdrop 由其设置 -->
+    <!-- 背景由 BackgroundService 管理 -->
     <Grid x:Name="RootGrid">
         <Grid x:Name="ShellGrid" RowSpacing="0">
             <Grid.RowDefinitions>
@@ -14,20 +15,21 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <!-- 与主窗口一致：Tall(48) TitleBar + 返回 + 导航折叠 + 图标 -->
-            <TitleBar
+            <!-- Toolkit Labs TitleBar：与主窗一致 Tall + 返回 + 导航折叠 + 图标 -->
+            <toolkit:TitleBar
                 x:Name="SettingsTitleBar"
                 Grid.Row="0"
-                Height="48"
                 Title="Float Hearing"
                 IsBackButtonVisible="True"
-                IsPaneToggleButtonVisible="True"
-                BackRequested="SettingsTitleBar_BackRequested"
-                PaneToggleRequested="SettingsTitleBar_PaneToggleRequested">
-                <TitleBar.IconSource>
-                    <ImageIconSource ImageSource="ms-appx:///AppIcon.ico" />
-                </TitleBar.IconSource>
-            </TitleBar>
+                IsPaneButtonVisible="True"
+                DisplayMode="Tall"
+                AutoConfigureCustomTitleBar="True"
+                BackButtonClick="SettingsTitleBar_BackButtonClick"
+                PaneButtonClick="SettingsTitleBar_PaneButtonClick">
+                <toolkit:TitleBar.Icon>
+                    <ImageIcon Source="ms-appx:///AppIcon.ico" />
+                </toolkit:TitleBar.Icon>
+            </toolkit:TitleBar>
 
             <NavigationView
                 x:Name="SettingsNav"

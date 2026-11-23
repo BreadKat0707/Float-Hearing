@@ -20,12 +20,11 @@ public sealed partial class SettingsWindow : Window
         SettingsTitleBar.Title = title;
         NavAppearance.Content = Loc.Get("SettingsAppearance");
 
-        ExtendsContentIntoTitleBar = true;
-        SetTitleBar(SettingsTitleBar);
+        // Toolkit TitleBar：AutoConfigure 处理扩展标题栏
+        SettingsTitleBar.Window = this;
 
         if (AppWindow is not null)
         {
-            AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
             AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
             AppWindow.SetIcon("AppIcon.ico");
             AppWindow.Resize(new Windows.Graphics.SizeInt32(1100, 720));
@@ -58,7 +57,7 @@ public sealed partial class SettingsWindow : Window
     private void OnBackgroundChanged(object? sender, EventArgs e)
         => BackgroundService.Instance.ApplyTo(this);
 
-    private void SettingsTitleBar_BackRequested(TitleBar sender, object args)
+    private void SettingsTitleBar_BackButtonClick(object sender, object args)
     {
         if (SettingsFrame.CanGoBack)
         {
@@ -71,7 +70,7 @@ public sealed partial class SettingsWindow : Window
         }
     }
 
-    private void SettingsTitleBar_PaneToggleRequested(TitleBar sender, object args)
+    private void SettingsTitleBar_PaneButtonClick(object sender, object args)
     {
         SettingsNav.IsPaneOpen = !SettingsNav.IsPaneOpen;
     }

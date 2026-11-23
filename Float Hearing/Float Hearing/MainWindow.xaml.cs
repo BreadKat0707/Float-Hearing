@@ -55,12 +55,11 @@ public sealed partial class MainWindow : Window
         HeaderHistory.Content = NavGroupHistory;
         HeaderPlaylists.Content = NavGroupPlaylists;
 
-        ExtendsContentIntoTitleBar = true;
-        SetTitleBar(AppTitleBar);
+        // Toolkit TitleBar：AutoConfigure 会处理 ExtendsContentIntoTitleBar + SetTitleBar
+        AppTitleBar.Window = this;
 
         if (AppWindow is not null)
         {
-            AppWindow.TitleBar.ExtendsContentIntoTitleBar = true;
             AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
             AppWindow.SetIcon("AppIcon.ico");
         }
@@ -117,9 +116,9 @@ public sealed partial class MainWindow : Window
 
     #region TitleBar commands
 
-    private void AppTitleBar_BackRequested(TitleBar sender, object args) => GoBack();
+    private void AppTitleBar_BackButtonClick(object sender, object args) => GoBack();
 
-    private void AppTitleBar_PaneToggleRequested(TitleBar sender, object args)
+    private void AppTitleBar_PaneButtonClick(object sender, object args)
         => RootNav.IsPaneOpen = !RootNav.IsPaneOpen;
 
     private async void BtnMusicLibrary_Click(object sender, RoutedEventArgs e)
