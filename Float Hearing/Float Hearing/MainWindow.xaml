@@ -46,19 +46,11 @@
                     Orientation="Horizontal"
                     Spacing="0"
                     HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
+                    VerticalAlignment="Stretch"
                     Margin="0,0,138,0">
                     <AppBarButton
                         x:Name="BtnMusicLibrary"
-                        Width="40"
-                        Height="40"
-                        Padding="0"
-                        Margin="0"
-                        MinWidth="40"
-                        MaxWidth="40"
-                        MinHeight="40"
-                        MaxHeight="40"
-                        VerticalAlignment="Center"
+                        Style="{StaticResource TitleBarCmdButton}"
                         Click="BtnMusicLibrary_Click"
                         ToolTipService.ToolTip="{x:Bind NavMusicLibrary, Mode=OneTime}">
                         <AppBarButton.Icon>
@@ -67,15 +59,7 @@
                     </AppBarButton>
                     <AppBarButton
                         x:Name="BtnRefreshLibrary"
-                        Width="40"
-                        Height="40"
-                        Padding="0"
-                        Margin="0"
-                        MinWidth="40"
-                        MaxWidth="40"
-                        MinHeight="40"
-                        MaxHeight="40"
-                        VerticalAlignment="Center"
+                        Style="{StaticResource TitleBarCmdButton}"
                         Click="BtnRefreshLibrary_Click"
                         ToolTipService.ToolTip="{x:Bind NavMusicRefresh, Mode=OneTime}">
                         <AppBarButton.Icon>
@@ -84,15 +68,7 @@
                     </AppBarButton>
                     <AppBarButton
                         x:Name="BtnSleepTimer"
-                        Width="40"
-                        Height="40"
-                        Padding="0"
-                        Margin="0"
-                        MinWidth="40"
-                        MaxWidth="40"
-                        MinHeight="40"
-                        MaxHeight="40"
-                        VerticalAlignment="Center"
+                        Style="{StaticResource TitleBarCmdButton}"
                         Click="BtnSleepTimer_Click"
                         ToolTipService.ToolTip="{x:Bind NavSleepTimer, Mode=OneTime}">
                         <AppBarButton.Icon>
@@ -101,15 +77,7 @@
                     </AppBarButton>
                     <AppBarButton
                         x:Name="BtnSettings"
-                        Width="40"
-                        Height="40"
-                        Padding="0"
-                        Margin="0"
-                        MinWidth="40"
-                        MaxWidth="40"
-                        MinHeight="40"
-                        MaxHeight="40"
-                        VerticalAlignment="Center"
+                        Style="{StaticResource TitleBarCmdButton}"
                         Click="BtnSettings_Click"
                         ToolTipService.ToolTip="{x:Bind NavSettings, Mode=OneTime}">
                         <AppBarButton.Icon>
@@ -118,15 +86,7 @@
                     </AppBarButton>
                     <AppBarButton
                         x:Name="BtnMore"
-                        Width="40"
-                        Height="40"
-                        Padding="0"
-                        Margin="0"
-                        MinWidth="40"
-                        MaxWidth="40"
-                        MinHeight="40"
-                        MaxHeight="40"
-                        VerticalAlignment="Center"
+                        Style="{StaticResource TitleBarCmdButton}"
                         Visibility="Collapsed"
                         ToolTipService.ToolTip="{x:Bind TitleBarMore, Mode=OneTime}">
                         <AppBarButton.Icon>
@@ -136,16 +96,32 @@
                             <MenuFlyout Placement="BottomEdgeAlignedRight">
                                 <MenuFlyoutItem
                                     Text="{x:Bind NavMusicLibrary, Mode=OneTime}"
-                                    Click="BtnMusicLibrary_Click" />
+                                    Click="BtnMusicLibrary_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE8B7;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
                                 <MenuFlyoutItem
                                     Text="{x:Bind NavMusicRefresh, Mode=OneTime}"
-                                    Click="BtnRefreshLibrary_Click" />
+                                    Click="BtnRefreshLibrary_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE72C;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
                                 <MenuFlyoutItem
                                     Text="{x:Bind NavSleepTimer, Mode=OneTime}"
-                                    Click="BtnSleepTimer_Click" />
+                                    Click="BtnSleepTimer_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE823;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
                                 <MenuFlyoutItem
                                     Text="{x:Bind NavSettings, Mode=OneTime}"
-                                    Click="BtnSettings_Click" />
+                                    Click="BtnSettings_Click">
+                                    <MenuFlyoutItem.Icon>
+                                        <FontIcon Glyph="&#xE713;" />
+                                    </MenuFlyoutItem.Icon>
+                                </MenuFlyoutItem>
                             </MenuFlyout>
                         </AppBarButton.Flyout>
                     </AppBarButton>
