@@ -38,7 +38,7 @@
                 <toolkit:TitleBar.Icon>
                     <ImageIcon Source="ms-appx:///AppIcon.ico" />
                 </toolkit:TitleBar.Icon>
-                <!-- 右侧命令区：紧贴三大金刚；40×40；宽度不足收进「更多」 -->
+                <!-- 右侧命令区：贴三大金刚；40×40；Margin=0 消除缝 -->
                 <toolkit:TitleBar.Footer>
                     <StackPanel
                         x:Name="FooterPanel"
@@ -46,12 +46,13 @@
                         Spacing="0"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Right"
-                        Margin="0,0,0,0">
+                        Margin="0,0,-8,0">
                         <AppBarButton
                             x:Name="BtnMusicLibrary"
                             Width="40"
                             Height="40"
                             Padding="0"
+                            Margin="0"
                             MinWidth="40"
                             MaxWidth="40"
                             MinHeight="40"
@@ -68,6 +69,7 @@
                             Width="40"
                             Height="40"
                             Padding="0"
+                            Margin="0"
                             MinWidth="40"
                             MaxWidth="40"
                             MinHeight="40"
@@ -84,6 +86,7 @@
                             Width="40"
                             Height="40"
                             Padding="0"
+                            Margin="0"
                             MinWidth="40"
                             MaxWidth="40"
                             MinHeight="40"
@@ -100,6 +103,7 @@
                             Width="40"
                             Height="40"
                             Padding="0"
+                            Margin="0"
                             MinWidth="40"
                             MaxWidth="40"
                             MinHeight="40"
@@ -111,12 +115,13 @@
                                 <FontIcon FontSize="14" Glyph="&#xE713;" />
                             </AppBarButton.Icon>
                         </AppBarButton>
-                        <!-- 溢出：普通 Button（避免 AppBarButton+Flyout 的下拉箭头） -->
-                        <Button
+                        <!-- 与其它钮同为 AppBarButton，高度/悬停一致；Flyout 无 Split 下拉条 -->
+                        <AppBarButton
                             x:Name="BtnMore"
                             Width="40"
                             Height="40"
                             Padding="0"
+                            Margin="0"
                             MinWidth="40"
                             MaxWidth="40"
                             MinHeight="40"
@@ -124,9 +129,11 @@
                             VerticalAlignment="Center"
                             Visibility="Collapsed"
                             ToolTipService.ToolTip="{x:Bind TitleBarMore, Mode=OneTime}">
-                            <FontIcon FontSize="14" Glyph="&#xE712;" />
-                            <Button.Flyout>
-                                <MenuFlyout Placement="Bottom">
+                            <AppBarButton.Icon>
+                                <FontIcon FontSize="14" Glyph="&#xE712;" />
+                            </AppBarButton.Icon>
+                            <AppBarButton.Flyout>
+                                <MenuFlyout Placement="BottomEdgeAlignedRight">
                                     <MenuFlyoutItem
                                         Text="{x:Bind NavMusicLibrary, Mode=OneTime}"
                                         Click="BtnMusicLibrary_Click" />
@@ -140,8 +147,8 @@
                                         Text="{x:Bind NavSettings, Mode=OneTime}"
                                         Click="BtnSettings_Click" />
                                 </MenuFlyout>
-                            </Button.Flyout>
-                        </Button>
+                            </AppBarButton.Flyout>
+                        </AppBarButton>
                     </StackPanel>
                 </toolkit:TitleBar.Footer>
             </toolkit:TitleBar>
