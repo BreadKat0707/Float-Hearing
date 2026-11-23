@@ -56,11 +56,11 @@ public sealed partial class MainWindow : Window
         HeaderPlaylists.Content = NavGroupPlaylists;
 
         // Toolkit TitleBar：AutoConfigure 会处理 ExtendsContentIntoTitleBar + SetTitleBar
+        // 高度由 DisplayMode=Tall 控制；勿再设 PreferredHeightOption（与 AutoConfigure 冲突 → 0x8007139F）
         AppTitleBar.Window = this;
 
         if (AppWindow is not null)
         {
-            AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
             AppWindow.SetIcon("AppIcon.ico");
         }
 

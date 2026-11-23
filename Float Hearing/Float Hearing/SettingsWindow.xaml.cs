@@ -21,11 +21,11 @@ public sealed partial class SettingsWindow : Window
         NavAppearance.Content = Loc.Get("SettingsAppearance");
 
         // Toolkit TitleBar：AutoConfigure 处理扩展标题栏
+        // 高度用 DisplayMode=Tall；勿设 PreferredHeightOption（0x8007139F）
         SettingsTitleBar.Window = this;
 
         if (AppWindow is not null)
         {
-            AppWindow.TitleBar.PreferredHeightOption = TitleBarHeightOption.Tall;
             AppWindow.SetIcon("AppIcon.ico");
             AppWindow.Resize(new Windows.Graphics.SizeInt32(1100, 720));
         }
