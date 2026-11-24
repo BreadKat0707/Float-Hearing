@@ -1,6 +1,7 @@
 using Microsoft.Graphics.Canvas.Effects;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.SystemBackdrops;
+using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Hosting;
@@ -37,6 +38,7 @@ public sealed class BackgroundService
     private readonly Dictionary<Window, ImageLayer> _layers = [];
     private readonly Dictionary<Window, AcrylicSystemBackdrop> _acrylicBackdrops = [];
     private readonly Dictionary<string, BitmapImage> _bitmapCache = new(StringComparer.OrdinalIgnoreCase);
+    private DispatcherQueueTimer? _saveDebounce;
 
     public static BackgroundService Instance { get; } = new();
 
@@ -95,7 +97,32 @@ public sealed class BackgroundService
         }
 
         BackgroundChanged?.Invoke(this, EventArgs.Empty);
-        SettingsService.SaveCurrent();
+        DebounceSave();
+    }
+
+    /// <summary>滑条连拖时合并落盘，避免每 tick 写 JSON 卡 UI。</summary>
+    private void DebounceSave()
+    {
+        var dq = DispatcherQueue.GetForCurrentThread();
+        if (dq is null)
+        {
+            SettingsService.SaveCurrent();
+            return;
+        }
+
+        if (_saveDebounce is null)
+        {
+            _saveDebounce = dq.CreateTimer();
+            _saveDebounce.Interval = TimeSpan.FromMilliseconds(400);
+            _saveDebounce.Tick += (_, _) =>
+            {
+                _saveDebounce.Stop();
+                SettingsService.SaveCurrent();
+            };
+        }
+
+        _saveDebounce.Stop();
+        _saveDebounce.Start();
     }
 
     public void NotifySettingsChanged()
@@ -319,15 +346,30 @@ public sealed class BackgroundService
 
     private sealed class ImageLayer
     {
+        public Window Window { get; init; } = null!;
         public Image Image { get; init; } = null!;
         /// <summary>模糊专用宿主：子视觉挂在它上面；Image 仅在无模糊时可见。</summary>
         public Border BlurHost { get; init; } = null!;
         public Border Dim { get; init; } = null!;
         public string? LoadedPath { get; set; }
+
         public SpriteVisual? BlurVisual { get; set; }
-        /// <summary>异步加载代数：滑条连拖时丢弃过期 LoadCompleted。</summary>
-        public int BlurGeneration { get; set; }
+
+        /// <summary>表面只按路径加载一次；拖半径不重载。</summary>
+        public LoadedImageSurface? Surface { get; set; }
+
+        public CompositionSurfaceBrush? SurfaceBrush { get; set; }
+
+        public string? SurfacePath { get; set; }
+
+        public CompositionEffectBrush? EffectBrush { get; set; }
+
         public double AppliedBlurRadius { get; set; } = -1;
+
+        /// <summary>异步加载代数：换图/清层时丢弃过期 LoadCompleted。</summary>
+        public int SurfaceGeneration { get; set; }
+
+        public bool SurfaceReady => SurfaceBrush is not null;
     }
 
     private ImageLayer GetOrCreateLayer(Window window, Grid root)
@@ -362,8 +404,11 @@ public sealed class BackgroundService
         root.Children.Insert(0, dim);
         root.Children.Insert(0, blurHost);
         root.Children.Insert(0, image);
-        var layer = new ImageLayer { Image = image, BlurHost = blurHost, Dim = dim };
+        var layer = new ImageLayer { Window = window, Image = image, BlurHost = blurHost, Dim = dim };
         _layers[window] = layer;
+
+        // 窗口缩放时同步模糊视觉尺寸
+        blurHost.SizeChanged += (_, _) => SyncBlurSpriteSize(layer);
         return layer;
     }
 
@@ -395,6 +440,12 @@ public sealed class BackgroundService
 
             layer.Image.Source = bmp;
             layer.LoadedPath = path;
+
+            // 换图 → 旧表面作废
+            if (!string.Equals(layer.SurfacePath, path, StringComparison.OrdinalIgnoreCase))
+            {
+                InvalidateSurface(layer);
+            }
         }
 
         layer.Image.Visibility = Visibility.Visible;
@@ -415,8 +466,9 @@ public sealed class BackgroundService
     }
 
     /// <summary>
-    /// Win2D 高斯模糊：子视觉挂在 BlurHost（保持 Visible），模糊时只藏原生 Image。
-    /// 旧实现把子视觉挂 Image 并 Collapsed → 组合树不渲染 → 看起来像 Solid。
+    /// 高斯模糊（Win2D + Composition）：
+    /// 表面按路径只加载一次；拖半径只重建 effect brush（不重载位图、不重建 surface）。
+    /// 子视觉挂 BlurHost（保持 Visible），避免挂在 Collapsed 的 Image 上不渲染。
     /// </summary>
     private void ApplyBlur(Window window, ImageLayer layer, double radius)
     {
@@ -427,8 +479,7 @@ public sealed class BackgroundService
         // 无模糊：恢复 Image，清掉宿主子视觉
         if (radius < 0.5)
         {
-            layer.BlurGeneration++;
-            ClearBlurHost(layer);
+            ClearBlurVisual(layer);
             image.Visibility = Visibility.Visible;
             host.Visibility = Visibility.Collapsed;
             layer.AppliedBlurRadius = radius;
@@ -442,22 +493,31 @@ public sealed class BackgroundService
             return;
         }
 
-        // 半径未变且宿主已有视觉 → 只可能 dim 变了，不必重建
-        if (layer.BlurVisual is not null && Math.Abs(layer.AppliedBlurRadius - radius) < 0.01)
+        // 表面未就绪：先保持原图可见，LoadCompleted 后会再进来
+        if (!layer.SurfaceReady || layer.SurfacePath is null
+            || !string.Equals(layer.SurfacePath, bmp.UriSource.ToString(), StringComparison.OrdinalIgnoreCase))
         {
-            image.Visibility = Visibility.Collapsed;
-            host.Visibility = Visibility.Visible;
+            EnsureSurfaceLoaded(layer, bmp.UriSource);
+            image.Visibility = Visibility.Visible;
+            host.Visibility = Visibility.Collapsed;
             return;
         }
 
-        var generation = ++layer.BlurGeneration;
-        ClearBlurHost(layer);
+        // 半径未变且视觉已在 → 只可能 dim 变了
+        if (layer.BlurVisual is not null && layer.EffectBrush is not null
+            && Math.Abs(layer.AppliedBlurRadius - radius) < 0.01)
+        {
+            image.Visibility = Visibility.Collapsed;
+            host.Visibility = Visibility.Visible;
+            SyncBlurSpriteSize(layer);
+            return;
+        }
 
         try
         {
-            var visual = ElementCompositionPreview.GetElementVisual(host);
-            var compositor = visual.Compositor;
+            var compositor = ElementCompositionPreview.GetElementVisual(host).Compositor;
 
+            // 只重建 effect brush；source 仍是缓存的 SurfaceBrush
             var effect = new GaussianBlurEffect
             {
                 Name = "imageBlur",
@@ -465,57 +525,124 @@ public sealed class BackgroundService
                 BorderMode = EffectBorderMode.Hard,
                 Source = new CompositionEffectSourceParameter("source"),
             };
-
             var factory = compositor.CreateEffectFactory(effect);
             var effectBrush = factory.CreateBrush();
+            effectBrush.SetSourceParameter("source", layer.SurfaceBrush!);
+            layer.EffectBrush = effectBrush;
+            layer.AppliedBlurRadius = radius;
 
-            var surface = LoadedImageSurface.StartLoadFromUri(bmp.UriSource);
-            surface.LoadCompleted += (_, args) =>
+            if (layer.BlurVisual is null)
             {
-                try
-                {
-                    if (generation != layer.BlurGeneration || !args.Status.Equals(AsyncStatus.Completed))
-                    {
-                        return;
-                    }
+                var sprite = compositor.CreateSpriteVisual();
+                sprite.Brush = effectBrush;
+                layer.BlurVisual = sprite;
+                ElementCompositionPreview.SetElementChildVisual(host, sprite);
+            }
+            else
+            {
+                layer.BlurVisual.Brush = effectBrush;
+            }
 
-                    var surfaceBrush = compositor.CreateSurfaceBrush(surface);
-                    surfaceBrush.Stretch = CompositionStretch.UniformToFill;
-                    effectBrush.SetSourceParameter("source", surfaceBrush);
-
-                    var sprite = compositor.CreateSpriteVisual();
-                    // 宿主未参与布局时用 Image 实测尺寸兜底
-                    var w = (float)(host.ActualWidth > 1 ? host.ActualWidth : image.ActualWidth > 1 ? image.ActualWidth : 1200);
-                    var h = (float)(host.ActualHeight > 1 ? host.ActualHeight : image.ActualHeight > 1 ? image.ActualHeight : 800);
-                    sprite.Size = new Vector2(w, h);
-                    sprite.Brush = effectBrush;
-
-                    // 模糊时：Image 藏、BlurHost 显示子视觉（宿主本身不 Collapsed）
-                    image.Visibility = Visibility.Collapsed;
-                    host.Visibility = Visibility.Visible;
-                    ElementCompositionPreview.SetElementChildVisual(host, sprite);
-                    layer.BlurVisual = sprite;
-                    layer.AppliedBlurRadius = radius;
-                }
-                catch
-                {
-                    if (generation == layer.BlurGeneration)
-                    {
-                        ClearBlurHost(layer);
-                        image.Visibility = Visibility.Visible;
-                        host.Visibility = Visibility.Collapsed;
-                    }
-                }
-            };
+            // 先显示宿主再取尺寸（Image 可能已 Collapsed）
+            host.Visibility = Visibility.Visible;
+            image.Visibility = Visibility.Collapsed;
+            SyncBlurSpriteSize(layer);
         }
         catch
         {
+            ClearBlurVisual(layer);
             image.Visibility = Visibility.Visible;
             host.Visibility = Visibility.Collapsed;
         }
     }
 
-    private static void ClearBlurHost(ImageLayer layer)
+    /// <summary>按路径加载表面一次；完成后再走 ApplyBlur 上视觉。</summary>
+    private void EnsureSurfaceLoaded(ImageLayer layer, Uri uri)
+    {
+        var uriText = uri.ToString();
+        if (layer.Surface is not null && layer.SurfacePath == uriText && layer.SurfaceBrush is not null)
+        {
+            return;
+        }
+
+        // 同一 URI 正在加载
+        if (layer.Surface is not null && layer.SurfacePath == uriText && layer.SurfaceBrush is null)
+        {
+            return;
+        }
+
+        InvalidateSurface(layer);
+        layer.SurfacePath = uriText;
+        var generation = ++layer.SurfaceGeneration;
+
+        try
+        {
+            var surface = LoadedImageSurface.StartLoadFromUri(uri);
+            layer.Surface = surface;
+            surface.LoadCompleted += (_, args) =>
+            {
+                try
+                {
+                    if (generation != layer.SurfaceGeneration)
+                    {
+                        return;
+                    }
+
+                    if (args.Status != LoadedImageSourceLoadStatus.Success)
+                    {
+                        layer.Surface = null;
+                        layer.SurfacePath = null;
+                        return;
+                    }
+
+                    var compositor = ElementCompositionPreview.GetElementVisual(layer.BlurHost).Compositor;
+                    var surfaceBrush = compositor.CreateSurfaceBrush(surface);
+                    surfaceBrush.Stretch = CompositionStretch.UniformToFill;
+                    layer.SurfaceBrush = surfaceBrush;
+
+                    // 表面就绪 → 立即按当前半径上模糊（回到所属窗口）
+                    ApplyBlur(layer.Window, layer, ImageBlur);
+                }
+                catch
+                {
+                    layer.SurfaceBrush = null;
+                }
+            };
+        }
+        catch
+        {
+            layer.Surface = null;
+            layer.SurfacePath = null;
+        }
+    }
+
+    private static void InvalidateSurface(ImageLayer layer)
+    {
+        layer.SurfaceGeneration++;
+        ClearBlurVisual(layer);
+        layer.SurfaceBrush = null;
+        layer.Surface = null;
+        layer.SurfacePath = null;
+        layer.EffectBrush = null;
+        layer.AppliedBlurRadius = -1;
+    }
+
+    /// <summary>子视觉尺寸贴宿主（或 Image 实测尺寸兜底）。</summary>
+    private static void SyncBlurSpriteSize(ImageLayer layer)
+    {
+        if (layer.BlurVisual is null)
+        {
+            return;
+        }
+
+        var host = layer.BlurHost;
+        var image = layer.Image;
+        var w = host.ActualWidth > 1 ? host.ActualWidth : image.ActualWidth > 1 ? image.ActualWidth : 1200;
+        var h = host.ActualHeight > 1 ? host.ActualHeight : image.ActualHeight > 1 ? image.ActualHeight : 800;
+        layer.BlurVisual.Size = new Vector2((float)w, (float)h);
+    }
+
+    private static void ClearBlurVisual(ImageLayer layer)
     {
         if (layer.BlurVisual is not null)
         {
@@ -523,17 +650,17 @@ public sealed class BackgroundService
             layer.BlurVisual = null;
         }
 
+        layer.EffectBrush = null;
         layer.AppliedBlurRadius = -1;
     }
 
     private static void HideLayer(ImageLayer layer)
     {
-        layer.BlurGeneration++;
         layer.Image.Visibility = Visibility.Collapsed;
         layer.Image.Source = null;
         layer.LoadedPath = null;
         layer.Dim.Visibility = Visibility.Collapsed;
-        ClearBlurHost(layer);
+        InvalidateSurface(layer);
         layer.BlurHost.Visibility = Visibility.Collapsed;
     }
 
