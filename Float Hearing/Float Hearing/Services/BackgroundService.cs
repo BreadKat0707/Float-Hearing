@@ -46,7 +46,7 @@ public sealed class BackgroundService
 
     public string SolidColor { get; set; } = "#202020";
 
-    public string AcrylicTintColor { get; set; } = "#80FFFFFF";
+    public string AcrylicTintColor { get; set; } = "#FFFFFF";
 
     public double AcrylicTintOpacity { get; set; } = 0.5;
 
@@ -214,14 +214,12 @@ public sealed class BackgroundService
         _layers.Remove(window);
     }
 
-    /// <summary>自定义亚克力着色层（配合 DesktopAcrylic 模糊）。</summary>
+    /// <summary>自定义亚克力着色层（配合 DesktopAcrylic 模糊）。透明度只来自滑条，hex 仅取 RGB。</summary>
     private Brush CreateTintOverlay()
     {
         var color = ParseColor(AcrylicTintColor);
-        var alpha = (byte)Math.Clamp(AcrylicTintOpacity * (byte.MaxValue), 0, 255);
-        // 若 hex 已带 alpha 通道则优先用其 alpha * 不透明度滑条
-        var a = color.A == 255 ? alpha : (byte)(color.A * AcrylicTintOpacity);
-        var c = Microsoft.UI.ColorHelper.FromArgb(a, color.R, color.G, color.B);
+        var alpha = (byte)Math.Clamp(AcrylicTintOpacity * byte.MaxValue, 0, 255);
+        var c = Microsoft.UI.ColorHelper.FromArgb(alpha, color.R, color.G, color.B);
         c = ApplyLuminosity(c, AcrylicLuminosity);
         return new SolidColorBrush(c);
     }

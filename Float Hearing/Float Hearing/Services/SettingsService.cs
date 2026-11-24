@@ -11,7 +11,7 @@ public sealed class AppSettings
 
     public string SolidColor { get; set; } = "#202020";
 
-    public string AcrylicTintColor { get; set; } = "#80FFFFFF";
+    public string AcrylicTintColor { get; set; } = "#FFFFFF";
 
     public double AcrylicTintOpacity { get; set; } = 0.5;
 

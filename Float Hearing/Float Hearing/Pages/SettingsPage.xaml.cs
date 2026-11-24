@@ -113,8 +113,9 @@ public sealed partial class SettingsPage : Page
                 _ => 1,
             };
             SolidColorBox.Text = bg.SolidColor;
-            AcrylicTintBox.Text = bg.AcrylicTintColor;
-            SyncAcrylicTintControls(bg.AcrylicTintColor);
+            var tintHex = NormalizeTintHex(bg.AcrylicTintColor) ?? bg.AcrylicTintColor;
+            AcrylicTintBox.Text = tintHex;
+            SyncAcrylicTintControls(tintHex);
             AcrylicOpacitySlider.Value = bg.AcrylicTintOpacity;
             AcrylicLumSlider.Value = bg.AcrylicLuminosity;
             ImageDimSlider.Value = bg.ImageDim;
@@ -207,8 +208,22 @@ public sealed partial class SettingsPage : Page
             return;
         }
 
-        BackgroundService.Instance.AcrylicTintColor = AcrylicTintBox.Text;
-        SyncAcrylicTintControls(AcrylicTintBox.Text);
+        // 允许手输 #AARRGGBB / #RGB，但立刻规范成 #RRGGBB（alpha 只归不透明度滑条）
+        var normalized = NormalizeTintHex(AcrylicTintBox.Text);
+        if (normalized is null)
+        {
+            // 未完成/非法输入：不写入服务
+            return;
+        }
+
+        if (!string.Equals(AcrylicTintBox.Text, normalized, StringComparison.OrdinalIgnoreCase))
+        {
+            AcrylicTintBox.Text = normalized;
+            return; // 重入一次再走统一路径
+        }
+
+        BackgroundService.Instance.AcrylicTintColor = normalized;
+        SyncAcrylicTintControls(normalized);
         if (BackgroundService.Instance.Mode == BackgroundMode.AcrylicCustom)
         {
             BackgroundService.Instance.NotifySettingsChanged();
@@ -217,6 +232,18 @@ public sealed partial class SettingsPage : Page
         {
             SettingsService.SaveCurrent();
         }
+    }
+
+    /// <summary>规范 tint hex 为 #RRGGBB；失败返回 null。</summary>
+    private static string? NormalizeTintHex(string input)
+    {
+        var color = TryParseHex(input);
+        if (color is null)
+        {
+            return null;
+        }
+
+        return $"#{color.Value.R:X2}{color.Value.G:X2}{color.Value.B:X2}";
     }
 
     /// <summary>hex → ColorPicker + 色块（Loaded / 手输 hex 时调用）。</summary>
@@ -256,32 +283,48 @@ public sealed partial class SettingsPage : Page
     }
 
     private static Windows.UI.Color ParseHexToColor(string hex)
+        => TryParseHex(hex) ?? Microsoft.UI.Colors.White;
+
+    /// <summary>解析 #RGB / #RRGGBB / #AARRGGBB（alpha 丢弃）；失败返回 null。</summary>
+    private static Windows.UI.Color? TryParseHex(string hex)
     {
         try
         {
             hex = hex.Trim();
-            if (hex.Length is 7 or 9 && hex[0] == '#')
+            if (hex.Length == 0 || hex[0] != '#')
             {
-                byte a = 255;
-                var offset = 1;
-                if (hex.Length == 9)
-                {
-                    a = Convert.ToByte(hex.Substring(1, 2), 16);
-                    offset = 3;
-                }
+                return null;
+            }
 
-                var r = Convert.ToByte(hex.Substring(offset, 2), 16);
-                var g = Convert.ToByte(hex.Substring(offset + 2, 2), 16);
-                var b = Convert.ToByte(hex.Substring(offset + 4, 2), 16);
-                return Microsoft.UI.ColorHelper.FromArgb(a, r, g, b);
+            var body = hex[1..];
+            if (body.Length == 3)
+            {
+                body = string.Concat(body.Select(ch => $"{ch}{ch}"));
+            }
+
+            if (body.Length == 6)
+            {
+                var r = Convert.ToByte(body[..2], 16);
+                var g = Convert.ToByte(body[2..4], 16);
+                var b = Convert.ToByte(body[4..6], 16);
+                return Microsoft.UI.ColorHelper.FromArgb(255, r, g, b);
+            }
+
+            if (body.Length == 8)
+            {
+                // #AARRGGBB —— 只取 RGB
+                var r = Convert.ToByte(body[2..4], 16);
+                var g = Convert.ToByte(body[4..6], 16);
+                var b = Convert.ToByte(body[6..8], 16);
+                return Microsoft.UI.ColorHelper.FromArgb(255, r, g, b);
             }
         }
         catch (Exception)
         {
-            // 非法 hex → 白
+            // 非法 hex
         }
 
-        return Microsoft.UI.Colors.White;
+        return null;
     }
 
     private void AcrylicOpacitySlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
