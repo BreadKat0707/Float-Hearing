@@ -38,7 +38,9 @@ public sealed class BackgroundService
     private readonly Dictionary<Window, ImageLayer> _layers = [];
     private readonly Dictionary<Window, AcrylicSystemBackdrop> _acrylicBackdrops = [];
     private readonly Dictionary<string, BitmapImage> _bitmapCache = new(StringComparer.OrdinalIgnoreCase);
+    private readonly HashSet<Window> _activeWindows = [];
     private DispatcherQueueTimer? _saveDebounce;
+    private DispatcherQueueTimer? _inactiveDebounce;
 
     public static BackgroundService Instance { get; } = new();
 
@@ -58,10 +60,109 @@ public sealed class BackgroundService
 
     public double ImageDim { get; set; } = 0.35;
 
+    /// <summary>图片压暗颜色：深色主题用。</summary>
+    public string ImageDimColorDark { get; set; } = "#000000";
+
+    /// <summary>图片压暗颜色：浅色主题用。</summary>
+    public string ImageDimColorLight { get; set; } = "#000000";
+
     /// <summary>高斯模糊半径 0~50（Win2D）。</summary>
     public double ImageBlur { get; set; } = 0;
 
-    public void Initialize() => ApplyAll();
+    /// <summary>全部窗口失焦时临时回退纯色（不改用户 Mode、不落盘为模式）。</summary>
+    public bool SolidWhenInactive { get; set; } = true;
+
+    /// <summary>实际应用的模式：失焦回退时用 Solid，其余用 Mode。</summary>
+    private BackgroundMode ApplyMode =>
+        !SolidWhenInactive || _activeWindows.Count > 0 || Mode == BackgroundMode.Solid
+            ? Mode
+            : BackgroundMode.Solid;
+
+    public void Initialize()
+    {
+        ThemeService.Instance.ThemeChanged -= OnThemeChanged;
+        ThemeService.Instance.ThemeChanged += OnThemeChanged;
+        ApplyAll();
+    }
+
+    private void OnThemeChanged(object? sender, AppThemeMode e)
+    {
+        // ThemeChanged 在 ApplyPending 之前触发；排队一拍等 ActualTheme 更新后再刷压暗色
+        if (Mode != BackgroundMode.Image)
+        {
+            return;
+        }
+
+        var dq = DispatcherQueue.GetForCurrentThread();
+        if (dq is not null && dq.TryEnqueue(() => UpdateImageEffects()))
+        {
+            return;
+        }
+
+        UpdateImageEffects();
+    }
+
+    /// <summary>
+    /// 窗口激活状态跟踪（失焦回退纯色）。
+    /// 「是否有激活窗」翻转时才处理；失焦侧延迟一拍，避免主窗↔设置窗焦点交接闪纯色。
+    /// </summary>
+    public void NotifyWindowActivation(Window window, bool active)
+    {
+        var wasActive = _activeWindows.Count > 0;
+        if (active)
+        {
+            _activeWindows.Add(window);
+        }
+        else
+        {
+            _activeWindows.Remove(window);
+        }
+
+        var isActive = _activeWindows.Count > 0;
+        if (wasActive == isActive)
+        {
+            // 状态未变：仅取消可能挂起的失焦回退（已有激活窗则背景本就正确）
+            if (isActive)
+            {
+                _inactiveDebounce?.Stop();
+            }
+
+            return;
+        }
+
+        if (Mode == BackgroundMode.Solid)
+        {
+            return;
+        }
+
+        if (isActive)
+        {
+            _inactiveDebounce?.Stop();
+            ApplyAll();
+            return;
+        }
+
+        // 全部失焦：延迟再确认仍无激活窗才回退
+        var dq = DispatcherQueue.GetForCurrentThread();
+        if (dq is null)
+        {
+            ApplyAll();
+            return;
+        }
+
+        _inactiveDebounce ??= dq.CreateTimer();
+        _inactiveDebounce.Interval = TimeSpan.FromMilliseconds(150);
+        _inactiveDebounce.Stop();
+        _inactiveDebounce.Tick += (_, _) =>
+        {
+            _inactiveDebounce.Stop();
+            if (_activeWindows.Count == 0 && Mode != BackgroundMode.Solid)
+            {
+                ApplyAll();
+            }
+        };
+        _inactiveDebounce.Start();
+    }
 
     /// <summary>启动时注入已存模式与参数（不 Apply；随后 Initialize 统一生效）。</summary>
     public void PreloadMode(BackgroundMode mode) => Mode = mode;
@@ -151,7 +252,10 @@ public sealed class BackgroundService
             // 释放上一轮自定义亚克力控制器
             DisposeAcrylic(window);
 
-            window.SystemBackdrop = Mode switch
+            // 失焦回退用 ApplyMode；用户 Mode 不变
+            var mode = ApplyMode;
+
+            window.SystemBackdrop = mode switch
             {
                 BackgroundMode.Mica => BackdropFactory.CreateMica(false),
                 BackgroundMode.MicaAlt => BackdropFactory.CreateMica(true),
@@ -164,7 +268,7 @@ public sealed class BackgroundService
 
             var layer = GetOrCreateLayer(window, root);
 
-            switch (Mode)
+            switch (mode)
             {
                 case BackgroundMode.Solid:
                     root.Background = ToSolid(SolidColor);
@@ -237,6 +341,7 @@ public sealed class BackgroundService
     /// <summary>窗口关闭：从跟踪移除，不触碰组合对象（避免关窗 hresult_error）。</summary>
     public void OnWindowClosed(Window window)
     {
+        _activeWindows.Remove(window);
         _acrylicBackdrops.Remove(window);
         _layers.Remove(window);
     }
@@ -457,7 +562,10 @@ public sealed class BackgroundService
     private void ApplyDimAndBlur(Window window, ImageLayer layer)
     {
         var dimOpacity = Math.Clamp(ImageDim, 0, 1);
-        layer.Dim.Background = new SolidColorBrush(Microsoft.UI.Colors.Black)
+        // 按当前实际主题选压暗颜色（深/浅分别配置）
+        var theme = (window.Content as FrameworkElement)?.ActualTheme ?? ElementTheme.Dark;
+        var hex = theme == ElementTheme.Light ? ImageDimColorLight : ImageDimColorDark;
+        layer.Dim.Background = new SolidColorBrush(ParseColor(hex))
         {
             Opacity = (float)dimOpacity,
         };

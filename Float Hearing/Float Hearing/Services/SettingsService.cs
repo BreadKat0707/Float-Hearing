@@ -21,7 +21,13 @@ public sealed class AppSettings
 
     public double ImageDim { get; set; } = 0.35;
 
+    public string ImageDimColorDark { get; set; } = "#000000";
+
+    public string ImageDimColorLight { get; set; } = "#000000";
+
     public double ImageBlur { get; set; } = 0;
+
+    public bool SolidWhenInactive { get; set; } = true;
 }
 
 /// <summary>设置读写：启动 Load→灌入服务；各变更点 SaveCurrent。</summary>
@@ -72,7 +78,10 @@ public static class SettingsService
                 AcrylicLuminosity = bg.AcrylicLuminosity,
                 ImagePath = bg.ImagePath,
                 ImageDim = bg.ImageDim,
+                ImageDimColorDark = bg.ImageDimColorDark,
+                ImageDimColorLight = bg.ImageDimColorLight,
                 ImageBlur = bg.ImageBlur,
+                SolidWhenInactive = bg.SolidWhenInactive,
             };
 
             var dir = System.IO.Path.GetDirectoryName(FilePath)!;
@@ -100,7 +109,10 @@ public static class SettingsService
         bg.AcrylicLuminosity = settings.AcrylicLuminosity;
         bg.ImagePath = settings.ImagePath;
         bg.ImageDim = settings.ImageDim;
+        bg.ImageDimColorDark = settings.ImageDimColorDark;
+        bg.ImageDimColorLight = settings.ImageDimColorLight;
         bg.ImageBlur = settings.ImageBlur;
+        bg.SolidWhenInactive = settings.SolidWhenInactive;
 
         if (Enum.TryParse<BackgroundMode>(settings.BackgroundMode, ignoreCase: true, out var mode))
         {

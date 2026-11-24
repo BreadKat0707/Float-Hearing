@@ -47,7 +47,11 @@ public sealed partial class SettingsPage : Page
         BgImagePath = Loc.Get("BgImagePath");
         BgPickImage = Loc.Get("BgPickImage");
         BgImageDim = Loc.Get("BgImageDim");
+        BgImageDimDark = Loc.Get("BgImageDimDark");
+        BgImageDimLight = Loc.Get("BgImageDimLight");
         BgImageBlur = Loc.Get("BgImageBlur");
+        BgSolidWhenInactive = Loc.Get("BgSolidWhenInactive");
+        BgSolidWhenInactiveDescription = Loc.Get("BgSolidWhenInactiveDescription");
 
         Loaded += SettingsPage_Loaded;
     }
@@ -82,7 +86,11 @@ public sealed partial class SettingsPage : Page
     public string BgImagePath { get; }
     public string BgPickImage { get; }
     public string BgImageDim { get; }
+    public string BgImageDimDark { get; }
+    public string BgImageDimLight { get; }
     public string BgImageBlur { get; }
+    public string BgSolidWhenInactive { get; }
+    public string BgSolidWhenInactiveDescription { get; }
 
     private void SettingsPage_Loaded(object sender, RoutedEventArgs e)
     {
@@ -112,6 +120,7 @@ public sealed partial class SettingsPage : Page
                 BackgroundMode.Image => 8,
                 _ => 1,
             };
+            SolidWhenInactiveToggle.IsOn = bg.SolidWhenInactive;
             SolidColorBox.Text = bg.SolidColor;
             var tintHex = NormalizeTintHex(bg.AcrylicTintColor) ?? bg.AcrylicTintColor;
             AcrylicTintBox.Text = tintHex;
@@ -119,6 +128,8 @@ public sealed partial class SettingsPage : Page
             AcrylicOpacitySlider.Value = bg.AcrylicTintOpacity;
             AcrylicLumSlider.Value = bg.AcrylicLuminosity;
             ImageDimSlider.Value = bg.ImageDim;
+            SyncDimColorControls(bg.ImageDimColorDark, DimDarkBox, DimDarkPicker, DimDarkSwatchBorder);
+            SyncDimColorControls(bg.ImageDimColorLight, DimLightBox, DimLightPicker, DimLightSwatchBorder);
             ImageBlurSlider.Value = bg.ImageBlur;
             ImagePathText.Text = bg.ImagePath ?? string.Empty;
             UpdateBackgroundCardVisibility(bg.Mode);
@@ -180,7 +191,21 @@ public sealed partial class SettingsPage : Page
         var image = mode == BackgroundMode.Image;
         CardImagePath.Visibility = image ? Visibility.Visible : Visibility.Collapsed;
         CardImageDim.Visibility = image ? Visibility.Visible : Visibility.Collapsed;
+        CardImageDimDark.Visibility = image ? Visibility.Visible : Visibility.Collapsed;
+        CardImageDimLight.Visibility = image ? Visibility.Visible : Visibility.Collapsed;
         CardImageBlur.Visibility = image ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void SolidWhenInactiveToggle_Toggled(object sender, RoutedEventArgs e)
+    {
+        if (_syncing)
+        {
+            return;
+        }
+
+        BackgroundService.Instance.SolidWhenInactive = SolidWhenInactiveToggle.IsOn;
+        // 开关变化可能立刻需要恢复/回退背景
+        BackgroundService.Instance.NotifySettingsChanged();
     }
 
     private void SolidColorBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -373,6 +398,108 @@ public sealed partial class SettingsPage : Page
         BackgroundService.Instance.ImageDim = e.NewValue;
         // 只刷 dim/blur，不重载位图
         BackgroundService.Instance.UpdateImageEffects();
+    }
+
+    private void DimDarkBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (_syncing)
+        {
+            return;
+        }
+
+        var normalized = NormalizeTintHex(DimDarkBox.Text);
+        if (normalized is null)
+        {
+            return;
+        }
+
+        if (!string.Equals(DimDarkBox.Text, normalized, StringComparison.OrdinalIgnoreCase))
+        {
+            DimDarkBox.Text = normalized;
+            return;
+        }
+
+        BackgroundService.Instance.ImageDimColorDark = normalized;
+        SyncDimColorControls(normalized, DimDarkBox, DimDarkPicker, DimDarkSwatchBorder);
+        BackgroundService.Instance.UpdateImageEffects();
+    }
+
+    private void DimLightBox_TextChanged(object sender, TextChangedEventArgs e)
+    {
+        if (_syncing)
+        {
+            return;
+        }
+
+        var normalized = NormalizeTintHex(DimLightBox.Text);
+        if (normalized is null)
+        {
+            return;
+        }
+
+        if (!string.Equals(DimLightBox.Text, normalized, StringComparison.OrdinalIgnoreCase))
+        {
+            DimLightBox.Text = normalized;
+            return;
+        }
+
+        BackgroundService.Instance.ImageDimColorLight = normalized;
+        SyncDimColorControls(normalized, DimLightBox, DimLightPicker, DimLightSwatchBorder);
+        BackgroundService.Instance.UpdateImageEffects();
+    }
+
+    private void DimDarkPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
+    {
+        if (_syncing)
+        {
+            return;
+        }
+
+        var hex = ColorToHex(args.NewColor);
+        if (!string.Equals(DimDarkBox.Text, hex, StringComparison.OrdinalIgnoreCase))
+        {
+            DimDarkBox.Text = hex;
+        }
+    }
+
+    private void DimLightPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
+    {
+        if (_syncing)
+        {
+            return;
+        }
+
+        var hex = ColorToHex(args.NewColor);
+        if (!string.Equals(DimLightBox.Text, hex, StringComparison.OrdinalIgnoreCase))
+        {
+            DimLightBox.Text = hex;
+        }
+    }
+
+    private static string ColorToHex(Windows.UI.Color c)
+        => $"#{c.R:X2}{c.G:X2}{c.B:X2}";
+
+    /// <summary>hex → 压暗色 ColorPicker + 色块（Loaded / 手输后同步）。</summary>
+    private void SyncDimColorControls(
+        string hex,
+        TextBox box,
+        ColorPicker picker,
+        Border swatch)
+    {
+        var color = ParseHexToColor(hex);
+        var normalized = NormalizeTintHex(hex) ?? hex;
+        var wasSyncing = _syncing;
+        _syncing = true;
+        try
+        {
+            box.Text = normalized;
+            picker.Color = color;
+            swatch.Background = new SolidColorBrush(color);
+        }
+        finally
+        {
+            _syncing = wasSyncing;
+        }
     }
 
     private void ImageBlurSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)

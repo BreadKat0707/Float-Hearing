@@ -288,4 +288,16 @@
   <data name="TitleBarMore" xml:space="preserve">
     <value>更多</value>
   </data>
+  <data name="BgImageDimDark" xml:space="preserve">
+    <value>壓暗顏色（深色）</value>
+  </data>
+  <data name="BgImageDimLight" xml:space="preserve">
+    <value>壓暗顏色（淺色）</value>
+  </data>
+  <data name="BgSolidWhenInactive" xml:space="preserve">
+    <value>失焦時回退純色</value>
+  </data>
+  <data name="BgSolidWhenInactiveDescription" xml:space="preserve">
+    <value>視窗失去焦點時暫時使用純色背景，重新取得焦點後還原</value>
+  </data>
 </root>

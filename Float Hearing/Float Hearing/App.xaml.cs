@@ -101,7 +101,17 @@ internal static class WindowTracker
             }
         }
 
-        window.Closed += (_, _) => Unregister(window);
+        // 失焦回退纯色：激活状态交 BackgroundService
+        window.Activated += (_, e) =>
+        {
+            var active = e.WindowActivationState != WindowActivationState.Deactivated;
+            BackgroundService.Instance.NotifyWindowActivation(window, active);
+        };
+        window.Closed += (_, _) =>
+        {
+            BackgroundService.Instance.OnWindowClosed(window);
+            Unregister(window);
+        };
     }
 
     public static void Unregister(Window window)

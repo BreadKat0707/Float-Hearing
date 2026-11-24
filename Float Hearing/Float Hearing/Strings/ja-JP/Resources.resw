@@ -288,4 +288,16 @@
   <data name="TitleBarMore" xml:space="preserve">
     <value>その他</value>
   </data>
+  <data name="BgImageDimDark" xml:space="preserve">
+    <value>暗転色（ダーク）</value>
+  </data>
+  <data name="BgImageDimLight" xml:space="preserve">
+    <value>暗転色（ライト）</value>
+  </data>
+  <data name="BgSolidWhenInactive" xml:space="preserve">
+    <value>非アクティブ時は単色に戻す</value>
+  </data>
+  <data name="BgSolidWhenInactiveDescription" xml:space="preserve">
+    <value>ウィンドウが非アクティブの間は単色背景を表示し、フォーカス時に復元します</value>
+  </data>
 </root>

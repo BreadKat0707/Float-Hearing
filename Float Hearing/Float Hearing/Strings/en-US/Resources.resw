@@ -333,4 +333,16 @@
   <data name="TitleBarMore" xml:space="preserve">
     <value>More</value>
   </data>
+  <data name="BgImageDimDark" xml:space="preserve">
+    <value>Dim color (dark)</value>
+  </data>
+  <data name="BgImageDimLight" xml:space="preserve">
+    <value>Dim color (light)</value>
+  </data>
+  <data name="BgSolidWhenInactive" xml:space="preserve">
+    <value>Solid color when inactive</value>
+  </data>
+  <data name="BgSolidWhenInactiveDescription" xml:space="preserve">
+    <value>Use a solid background while the window is inactive; restore when focused</value>
+  </data>
 </root>

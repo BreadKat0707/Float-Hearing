@@ -20,17 +20,22 @@
                 Style="{StaticResource SubtitleTextBlockStyle}"
                 Text="{x:Bind AppearanceLabel, Mode=OneTime}" />
 
-            <!-- 主题 -->
+            <!-- 主题：HeaderIcon + 右侧 ComboBox（对齐系统设置样式） -->
             <toolkit:SettingsCard
                 Header="{x:Bind ThemeLabel, Mode=OneTime}"
                 Description="{x:Bind ThemeDescription, Mode=OneTime}">
-                <RadioButtons
+                <toolkit:SettingsCard.HeaderIcon>
+                    <FontIcon Glyph="&#xE790;" />
+                </toolkit:SettingsCard.HeaderIcon>
+                <ComboBox
                     x:Name="ThemeSelector"
+                    MinWidth="160"
+                    HorizontalAlignment="Right"
                     SelectionChanged="ThemeSelector_SelectionChanged">
-                    <RadioButton Content="{x:Bind ThemeSystemLabel, Mode=OneTime}" Tag="System" />
-                    <RadioButton Content="{x:Bind ThemeLightLabel, Mode=OneTime}" Tag="Light" />
-                    <RadioButton Content="{x:Bind ThemeDarkLabel, Mode=OneTime}" Tag="Dark" />
-                </RadioButtons>
+                    <ComboBoxItem Content="{x:Bind ThemeSystemLabel, Mode=OneTime}" Tag="System" />
+                    <ComboBoxItem Content="{x:Bind ThemeLightLabel, Mode=OneTime}" Tag="Light" />
+                    <ComboBoxItem Content="{x:Bind ThemeDarkLabel, Mode=OneTime}" Tag="Dark" />
+                </ComboBox>
             </toolkit:SettingsCard>
 
             <!-- 背景类型 -->
@@ -40,6 +45,9 @@
                 IsExpanded="True">
                 <toolkit:SettingsExpander.Items>
                     <toolkit:SettingsCard Header="{x:Bind BackgroundModeLabel, Mode=OneTime}">
+                        <toolkit:SettingsCard.HeaderIcon>
+                            <FontIcon Glyph="&#xE790;" />
+                        </toolkit:SettingsCard.HeaderIcon>
                         <ComboBox
                             x:Name="BackgroundModeSelector"
                             MinWidth="200"
@@ -57,10 +65,27 @@
                         </ComboBox>
                     </toolkit:SettingsCard>
 
+                    <!-- 失焦回退纯色（始终可见） -->
+                    <toolkit:SettingsCard
+                        x:Name="CardSolidWhenInactive"
+                        Header="{x:Bind BgSolidWhenInactive, Mode=OneTime}"
+                        Description="{x:Bind BgSolidWhenInactiveDescription, Mode=OneTime}">
+                        <toolkit:SettingsCard.HeaderIcon>
+                            <FontIcon Glyph="&#xE7F8;" />
+                        </toolkit:SettingsCard.HeaderIcon>
+                        <ToggleSwitch
+                            x:Name="SolidWhenInactiveToggle"
+                            IsOn="True"
+                            Toggled="SolidWhenInactiveToggle_Toggled" />
+                    </toolkit:SettingsCard>
+
                     <!-- Solid 颜色 -->
                     <toolkit:SettingsCard
                         x:Name="CardSolidColor"
                         Header="{x:Bind BgSolidColor, Mode=OneTime}">
+                        <toolkit:SettingsCard.HeaderIcon>
+                            <FontIcon Glyph="&#xE790;" />
+                        </toolkit:SettingsCard.HeaderIcon>
                         <TextBox
                             x:Name="SolidColorBox"
                             Width="120"
@@ -135,10 +160,13 @@
                             ValueChanged="AcrylicLumSlider_ValueChanged" />
                     </toolkit:SettingsCard>
 
-                    <!-- 图片：路径 / dim / blur -->
+                    <!-- 图片：路径 / 压暗强度 / 深浅压暗色 / blur -->
                     <toolkit:SettingsCard
                         x:Name="CardImagePath"
                         Header="{x:Bind BgImagePath, Mode=OneTime}">
+                        <toolkit:SettingsCard.HeaderIcon>
+                            <FontIcon Glyph="&#xE91B;" />
+                        </toolkit:SettingsCard.HeaderIcon>
                         <StackPanel Orientation="Horizontal" Spacing="8">
                             <Button
                                 Content="{x:Bind BgPickImage, Mode=OneTime}"
@@ -154,6 +182,9 @@
                     <toolkit:SettingsCard
                         x:Name="CardImageDim"
                         Header="{x:Bind BgImageDim, Mode=OneTime}">
+                        <toolkit:SettingsCard.HeaderIcon>
+                            <FontIcon Glyph="&#xE706;" />
+                        </toolkit:SettingsCard.HeaderIcon>
                         <Slider
                             x:Name="ImageDimSlider"
                             Width="200"
@@ -164,8 +195,95 @@
                             ValueChanged="ImageDimSlider_ValueChanged" />
                     </toolkit:SettingsCard>
                     <toolkit:SettingsCard
+                        x:Name="CardImageDimDark"
+                        Header="{x:Bind BgImageDimDark, Mode=OneTime}">
+                        <toolkit:SettingsCard.HeaderIcon>
+                            <FontIcon Glyph="&#xE708;" />
+                        </toolkit:SettingsCard.HeaderIcon>
+                        <StackPanel
+                            Orientation="Horizontal"
+                            Spacing="8"
+                            HorizontalAlignment="Right">
+                            <Button
+                                x:Name="DimDarkSwatch"
+                                Width="40"
+                                Height="32"
+                                Padding="0"
+                                ToolTipService.ToolTip="{x:Bind BgImageDimDark, Mode=OneTime}">
+                                <Button.Flyout>
+                                    <Flyout>
+                                        <ColorPicker
+                                            x:Name="DimDarkPicker"
+                                            IsAlphaEnabled="False"
+                                            IsAlphaSliderVisible="False"
+                                            IsAlphaTextInputVisible="False"
+                                            IsHexInputVisible="True"
+                                            IsMoreButtonVisible="False"
+                                            ColorChanged="DimDarkPicker_ColorChanged" />
+                                    </Flyout>
+                                </Button.Flyout>
+                                <Border
+                                    x:Name="DimDarkSwatchBorder"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Black"
+                                    CornerRadius="4" />
+                            </Button>
+                            <TextBox
+                                x:Name="DimDarkBox"
+                                Width="120"
+                                VerticalAlignment="Center"
+                                TextChanged="DimDarkBox_TextChanged" />
+                        </StackPanel>
+                    </toolkit:SettingsCard>
+                    <toolkit:SettingsCard
+                        x:Name="CardImageDimLight"
+                        Header="{x:Bind BgImageDimLight, Mode=OneTime}">
+                        <toolkit:SettingsCard.HeaderIcon>
+                            <FontIcon Glyph="&#xE706;" />
+                        </toolkit:SettingsCard.HeaderIcon>
+                        <StackPanel
+                            Orientation="Horizontal"
+                            Spacing="8"
+                            HorizontalAlignment="Right">
+                            <Button
+                                x:Name="DimLightSwatch"
+                                Width="40"
+                                Height="32"
+                                Padding="0"
+                                ToolTipService.ToolTip="{x:Bind BgImageDimLight, Mode=OneTime}">
+                                <Button.Flyout>
+                                    <Flyout>
+                                        <ColorPicker
+                                            x:Name="DimLightPicker"
+                                            IsAlphaEnabled="False"
+                                            IsAlphaSliderVisible="False"
+                                            IsAlphaTextInputVisible="False"
+                                            IsHexInputVisible="True"
+                                            IsMoreButtonVisible="False"
+                                            ColorChanged="DimLightPicker_ColorChanged" />
+                                    </Flyout>
+                                </Button.Flyout>
+                                <Border
+                                    x:Name="DimLightSwatchBorder"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="Black"
+                                    CornerRadius="4" />
+                            </Button>
+                            <TextBox
+                                x:Name="DimLightBox"
+                                Width="120"
+                                VerticalAlignment="Center"
+                                TextChanged="DimLightBox_TextChanged" />
+                        </StackPanel>
+                    </toolkit:SettingsCard>
+                    <toolkit:SettingsCard
                         x:Name="CardImageBlur"
                         Header="{x:Bind BgImageBlur, Mode=OneTime}">
+                        <toolkit:SettingsCard.HeaderIcon>
+                            <FontIcon Glyph="&#xE71E;" />
+                        </toolkit:SettingsCard.HeaderIcon>
                         <Slider
                             x:Name="ImageBlurSlider"
                             Width="200"

@@ -288,4 +288,16 @@
   <data name="TitleBarMore" xml:space="preserve">
     <value>더보기</value>
   </data>
+  <data name="BgImageDimDark" xml:space="preserve">
+    <value>어둡게 색(다크)</value>
+  </data>
+  <data name="BgImageDimLight" xml:space="preserve">
+    <value>어둡게 색(라이트)</value>
+  </data>
+  <data name="BgSolidWhenInactive" xml:space="preserve">
+    <value>비활성 시 단색으로</value>
+  </data>
+  <data name="BgSolidWhenInactiveDescription" xml:space="preserve">
+    <value>창이 비활성일 때 단색 배경을 사용하고, 포커스를 다시 얻으면 복원합니다</value>
+  </data>
 </root>
