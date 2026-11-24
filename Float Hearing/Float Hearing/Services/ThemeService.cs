@@ -27,9 +27,16 @@ public sealed class ThemeService
 
     public AppThemeMode Mode => _mode;
 
+    /// <summary>启动时注入已存主题（不触发事件、不 Apply；随后 Initialize 统一生效）。</summary>
+    public void Preload(AppThemeMode mode)
+    {
+        _mode = mode;
+        _pending = null;
+    }
+
     public void Initialize()
     {
-        ApplyNow(AppThemeMode.System);
+        ApplyNow(_mode);
     }
 
     public void SetMode(AppThemeMode mode)
@@ -53,6 +60,7 @@ public sealed class ThemeService
             ApplyPending();
         }
 
+        SettingsService.SaveCurrent();
         ThemeChanged?.Invoke(this, mode);
     }
 

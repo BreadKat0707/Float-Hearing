@@ -77,6 +77,9 @@ public partial class App : Application
         WindowTracker.Register(_window);
         _window.Activate();
 
+        // 先灌入已存设置，再初始化（避免默认值覆盖磁盘）
+        SettingsService.ApplyToServices(SettingsService.Load());
+
         Theme.Initialize();
         BackgroundService.Instance.Initialize();
     }

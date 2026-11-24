@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using System.Numerics;
+using Windows.Foundation;
 using Windows.Graphics.Effects;
 
 namespace Float_Hearing.Services;
@@ -60,10 +61,14 @@ public sealed class BackgroundService
 
     public void Initialize() => ApplyAll();
 
+    /// <summary>启动时注入已存模式与参数（不 Apply；随后 Initialize 统一生效）。</summary>
+    public void PreloadMode(BackgroundMode mode) => Mode = mode;
+
     public void SetMode(BackgroundMode mode)
     {
         Mode = mode;
         ApplyAll();
+        SettingsService.SaveCurrent();
         BackgroundChanged?.Invoke(this, EventArgs.Empty);
     }
 
@@ -90,9 +95,14 @@ public sealed class BackgroundService
         }
 
         BackgroundChanged?.Invoke(this, EventArgs.Empty);
+        SettingsService.SaveCurrent();
     }
 
-    public void NotifySettingsChanged() => ApplyAll();
+    public void NotifySettingsChanged()
+    {
+        ApplyAll();
+        SettingsService.SaveCurrent();
+    }
 
     public void ApplyAll()
     {
@@ -212,15 +222,114 @@ public sealed class BackgroundService
         // 若 hex 已带 alpha 通道则优先用其 alpha * 不透明度滑条
         var a = color.A == 255 ? alpha : (byte)(color.A * AcrylicTintOpacity);
         var c = Microsoft.UI.ColorHelper.FromArgb(a, color.R, color.G, color.B);
+        c = ApplyLuminosity(c, AcrylicLuminosity);
         return new SolidColorBrush(c);
+    }
+
+    /// <summary>
+    /// Luminosity 滑条（0~1，0.5=不变）：把 tint 的 HSL 亮度向滑条值拉动，
+    /// 白/灰 tint 也能看出变暗/变亮（纯白抬高仍封顶 255）。
+    /// </summary>
+    private static Windows.UI.Color ApplyLuminosity(Windows.UI.Color c, double luminosity)
+    {
+        var lum = Math.Clamp(luminosity, 0, 1);
+        RgbToHsl(c.R, c.G, c.B, out var h, out var s, out var l);
+        var newL = l + (lum - l) * 0.65;
+        var (r, g, b) = HslToRgb(h, s, newL);
+        return Microsoft.UI.ColorHelper.FromArgb(c.A, r, g, b);
+    }
+
+    private static void RgbToHsl(byte r0, byte g0, byte b0, out double h, out double s, out double l)
+    {
+        double r = r0 / 255.0, g = g0 / 255.0, b = b0 / 255.0;
+        var max = Math.Max(r, Math.Max(g, b));
+        var min = Math.Min(r, Math.Min(g, b));
+        l = (max + min) / 2;
+        if (Math.Abs(max - min) < 1e-9)
+        {
+            h = 0;
+            s = 0;
+            return;
+        }
+
+        var d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        if (Math.Abs(max - r) < 1e-9)
+        {
+            h = (g - b) / d + (g < b ? 6 : 0);
+        }
+        else if (Math.Abs(max - g) < 1e-9)
+        {
+            h = (b - r) / d + 2;
+        }
+        else
+        {
+            h = (r - g) / d + 4;
+        }
+
+        h /= 6;
+    }
+
+    private static (byte R, byte G, byte B) HslToRgb(double h, double s, double l)
+    {
+        if (s < 1e-9)
+        {
+            var v = (byte)Math.Clamp(Math.Round(l * 255), 0, 255);
+            return (v, v, v);
+        }
+
+        static double Hue2Rgb(double p, double q, double t)
+        {
+            if (t < 0)
+            {
+                t += 1;
+            }
+
+            if (t > 1)
+            {
+                t -= 1;
+            }
+
+            if (t < 1.0 / 6)
+            {
+                return p + (q - p) * 6 * t;
+            }
+
+            if (t < 1.0 / 2)
+            {
+                return q;
+            }
+
+            if (t < 2.0 / 3)
+            {
+                return p + (q - p) * (2.0 / 3 - t) * 6;
+            }
+
+            return p;
+        }
+
+        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        var p = 2 * l - q;
+        var r = Hue2Rgb(p, q, h + 1.0 / 3);
+        var g = Hue2Rgb(p, q, h);
+        var b = Hue2Rgb(p, q, h - 1.0 / 3);
+        return (
+            (byte)Math.Clamp(Math.Round(r * 255), 0, 255),
+            (byte)Math.Clamp(Math.Round(g * 255), 0, 255),
+            (byte)Math.Clamp(Math.Round(b * 255), 0, 255));
     }
 
     private sealed class ImageLayer
     {
         public Image Image { get; init; } = null!;
+        /// <summary>模糊专用宿主：子视觉挂在它上面；Image 仅在无模糊时可见。</summary>
+        public Border BlurHost { get; init; } = null!;
         public Border Dim { get; init; } = null!;
         public string? LoadedPath { get; set; }
         public SpriteVisual? BlurVisual { get; set; }
+        /// <summary>异步加载代数：滑条连拖时丢弃过期 LoadCompleted。</summary>
+        public int BlurGeneration { get; set; }
+        public double AppliedBlurRadius { get; set; } = -1;
     }
 
     private ImageLayer GetOrCreateLayer(Window window, Grid root)
@@ -238,15 +347,24 @@ public sealed class BackgroundService
             IsHitTestVisible = false,
             Visibility = Visibility.Collapsed,
         };
+        var blurHost = new Border
+        {
+            IsHitTestVisible = false,
+            Visibility = Visibility.Collapsed,
+            HorizontalAlignment = HorizontalAlignment.Stretch,
+            VerticalAlignment = VerticalAlignment.Stretch,
+        };
         var dim = new Border
         {
             IsHitTestVisible = false,
             Visibility = Visibility.Collapsed,
         };
 
+        // 顺序：image → blurHost → dim → 其它内容
         root.Children.Insert(0, dim);
+        root.Children.Insert(0, blurHost);
         root.Children.Insert(0, image);
-        var layer = new ImageLayer { Image = image, Dim = dim };
+        var layer = new ImageLayer { Image = image, BlurHost = blurHost, Dim = dim };
         _layers[window] = layer;
         return layer;
     }
@@ -298,29 +416,48 @@ public sealed class BackgroundService
         ApplyBlur(window, layer, ImageBlur);
     }
 
-    /// <summary>Win2D 高斯模糊：对 Image 建 SpriteVisual + GaussianBlurEffect。</summary>
-    private static void ApplyBlur(Window window, ImageLayer layer, double radius)
+    /// <summary>
+    /// Win2D 高斯模糊：子视觉挂在 BlurHost（保持 Visible），模糊时只藏原生 Image。
+    /// 旧实现把子视觉挂 Image 并 Collapsed → 组合树不渲染 → 看起来像 Solid。
+    /// </summary>
+    private void ApplyBlur(Window window, ImageLayer layer, double radius)
     {
         radius = Math.Clamp(radius, 0, 50);
         var image = layer.Image;
+        var host = layer.BlurHost;
 
-        // 清除旧模糊 visual
-        if (layer.BlurVisual is not null)
+        // 无模糊：恢复 Image，清掉宿主子视觉
+        if (radius < 0.5)
         {
-            ElementCompositionPreview.SetElementChildVisual(image, null);
-            layer.BlurVisual = null;
-        }
-
-        if (radius < 0.5 || image.Source is not BitmapImage bmp || bmp.UriSource is null)
-        {
-            // 无模糊时恢复 Image 自身绘制
+            layer.BlurGeneration++;
+            ClearBlurHost(layer);
             image.Visibility = Visibility.Visible;
+            host.Visibility = Visibility.Collapsed;
+            layer.AppliedBlurRadius = radius;
             return;
         }
 
+        if (image.Source is not BitmapImage bmp || bmp.UriSource is null)
+        {
+            image.Visibility = Visibility.Visible;
+            host.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        // 半径未变且宿主已有视觉 → 只可能 dim 变了，不必重建
+        if (layer.BlurVisual is not null && Math.Abs(layer.AppliedBlurRadius - radius) < 0.01)
+        {
+            image.Visibility = Visibility.Collapsed;
+            host.Visibility = Visibility.Visible;
+            return;
+        }
+
+        var generation = ++layer.BlurGeneration;
+        ClearBlurHost(layer);
+
         try
         {
-            var visual = ElementCompositionPreview.GetElementVisual(image);
+            var visual = ElementCompositionPreview.GetElementVisual(host);
             var compositor = visual.Compositor;
 
             var effect = new GaussianBlurEffect
@@ -335,48 +472,71 @@ public sealed class BackgroundService
             var effectBrush = factory.CreateBrush();
 
             var surface = LoadedImageSurface.StartLoadFromUri(bmp.UriSource);
-            surface.LoadCompleted += (_, _) =>
+            surface.LoadCompleted += (_, args) =>
             {
                 try
                 {
+                    if (generation != layer.BlurGeneration || !args.Status.Equals(AsyncStatus.Completed))
+                    {
+                        return;
+                    }
+
                     var surfaceBrush = compositor.CreateSurfaceBrush(surface);
                     surfaceBrush.Stretch = CompositionStretch.UniformToFill;
                     effectBrush.SetSourceParameter("source", surfaceBrush);
 
                     var sprite = compositor.CreateSpriteVisual();
-                    var w = (float)(image.ActualWidth > 1 ? image.ActualWidth : 1200);
-                    var h = (float)(image.ActualHeight > 1 ? image.ActualHeight : 800);
+                    // 宿主未参与布局时用 Image 实测尺寸兜底
+                    var w = (float)(host.ActualWidth > 1 ? host.ActualWidth : image.ActualWidth > 1 ? image.ActualWidth : 1200);
+                    var h = (float)(host.ActualHeight > 1 ? host.ActualHeight : image.ActualHeight > 1 ? image.ActualHeight : 800);
                     sprite.Size = new Vector2(w, h);
                     sprite.Brush = effectBrush;
 
-                    // 模糊时隐藏原生 Image 绘制，只显示 SpriteVisual
+                    // 模糊时：Image 藏、BlurHost 显示子视觉（宿主本身不 Collapsed）
                     image.Visibility = Visibility.Collapsed;
-                    ElementCompositionPreview.SetElementChildVisual(image, sprite);
+                    host.Visibility = Visibility.Visible;
+                    ElementCompositionPreview.SetElementChildVisual(host, sprite);
                     layer.BlurVisual = sprite;
+                    layer.AppliedBlurRadius = radius;
                 }
                 catch
                 {
-                    image.Visibility = Visibility.Visible;
+                    if (generation == layer.BlurGeneration)
+                    {
+                        ClearBlurHost(layer);
+                        image.Visibility = Visibility.Visible;
+                        host.Visibility = Visibility.Collapsed;
+                    }
                 }
             };
         }
         catch
         {
             image.Visibility = Visibility.Visible;
+            host.Visibility = Visibility.Collapsed;
         }
+    }
+
+    private static void ClearBlurHost(ImageLayer layer)
+    {
+        if (layer.BlurVisual is not null)
+        {
+            ElementCompositionPreview.SetElementChildVisual(layer.BlurHost, null);
+            layer.BlurVisual = null;
+        }
+
+        layer.AppliedBlurRadius = -1;
     }
 
     private static void HideLayer(ImageLayer layer)
     {
+        layer.BlurGeneration++;
         layer.Image.Visibility = Visibility.Collapsed;
         layer.Image.Source = null;
         layer.LoadedPath = null;
         layer.Dim.Visibility = Visibility.Collapsed;
-        if (layer.BlurVisual is not null)
-        {
-            ElementCompositionPreview.SetElementChildVisual(layer.Image, null);
-            layer.BlurVisual = null;
-        }
+        ClearBlurHost(layer);
+        layer.BlurHost.Visibility = Visibility.Collapsed;
     }
 
     private static SolidColorBrush ToSolid(string hex)

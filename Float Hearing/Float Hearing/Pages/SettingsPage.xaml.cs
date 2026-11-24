@@ -192,6 +192,10 @@ public sealed partial class SettingsPage : Page
         {
             BackgroundService.Instance.NotifySettingsChanged();
         }
+        else
+        {
+            SettingsService.SaveCurrent();
+        }
     }
 
     private void AcrylicTintBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -205,6 +209,10 @@ public sealed partial class SettingsPage : Page
         if (BackgroundService.Instance.Mode == BackgroundMode.AcrylicCustom)
         {
             BackgroundService.Instance.NotifySettingsChanged();
+        }
+        else
+        {
+            SettingsService.SaveCurrent();
         }
     }
 
@@ -220,6 +228,10 @@ public sealed partial class SettingsPage : Page
         {
             BackgroundService.Instance.NotifySettingsChanged();
         }
+        else
+        {
+            SettingsService.SaveCurrent();
+        }
     }
 
     private void AcrylicLumSlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
@@ -233,6 +245,10 @@ public sealed partial class SettingsPage : Page
         if (BackgroundService.Instance.Mode == BackgroundMode.AcrylicCustom)
         {
             BackgroundService.Instance.NotifySettingsChanged();
+        }
+        else
+        {
+            SettingsService.SaveCurrent();
         }
     }
 
