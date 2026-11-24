@@ -72,7 +72,7 @@
                         Click="BtnSleepTimer_Click"
                         ToolTipService.ToolTip="{x:Bind NavSleepTimer, Mode=OneTime}">
                         <AppBarButton.Icon>
-                            <FontIcon FontSize="14" Glyph="&#xE823;" />
+                            <FontIcon FontSize="14" Glyph="&#xE916;" />
                         </AppBarButton.Icon>
                     </AppBarButton>
                     <AppBarButton

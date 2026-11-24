@@ -286,9 +286,9 @@ public sealed partial class MainWindow : Window
     {
         var flyout = new MenuFlyout { Placement = FlyoutPlacementMode.BottomEdgeAlignedRight };
 
-        flyout.Items.Add(CreateMoreItem(NavMusicLibrary, "\uE8B7", BtnMusicLibrary_Click));
+        flyout.Items.Add(CreateMoreItem(NavMusicLibrary, "", BtnMusicLibrary_Click));
         flyout.Items.Add(CreateMoreItem(NavMusicRefresh, "\uE72C", BtnRefreshLibrary_Click));
-        flyout.Items.Add(CreateMoreItem(NavSleepTimer, "\uE823", BtnSleepTimer_Click));
+        flyout.Items.Add(CreateMoreItem(NavSleepTimer, "", BtnSleepTimer_Click));
         flyout.Items.Add(CreateMoreItem(NavSettings, "\uE713", BtnSettings_Click));
         return flyout;
     }
