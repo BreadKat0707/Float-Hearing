@@ -72,11 +72,43 @@
                     <toolkit:SettingsCard
                         x:Name="CardAcrylicTint"
                         Header="{x:Bind BgAcrylicTint, Mode=OneTime}">
-                        <TextBox
-                            x:Name="AcrylicTintBox"
-                            Width="120"
-                            HorizontalAlignment="Right"
-                            TextChanged="AcrylicTintBox_TextChanged" />
+                        <StackPanel
+                            Orientation="Horizontal"
+                            Spacing="8"
+                            HorizontalAlignment="Right">
+                            <!-- 色块按钮：点开 ColorPicker -->
+                            <Button
+                                x:Name="AcrylicTintSwatch"
+                                Width="40"
+                                Height="32"
+                                Padding="0"
+                                ToolTipService.ToolTip="{x:Bind BgAcrylicTint, Mode=OneTime}">
+                                <Button.Flyout>
+                                    <Flyout>
+                                        <!-- 透明度由独立滑条控制，ColorPicker 只改 RGB -->
+                                        <ColorPicker
+                                            x:Name="AcrylicTintPicker"
+                                            IsAlphaEnabled="False"
+                                            IsAlphaSliderVisible="False"
+                                            IsAlphaTextInputVisible="False"
+                                            IsHexInputVisible="True"
+                                            IsMoreButtonVisible="False"
+                                            ColorChanged="AcrylicTintPicker_ColorChanged" />
+                                    </Flyout>
+                                </Button.Flyout>
+                                <Border
+                                    x:Name="AcrylicTintSwatchBorder"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Background="White"
+                                    CornerRadius="4" />
+                            </Button>
+                            <TextBox
+                                x:Name="AcrylicTintBox"
+                                Width="120"
+                                VerticalAlignment="Center"
+                                TextChanged="AcrylicTintBox_TextChanged" />
+                        </StackPanel>
                     </toolkit:SettingsCard>
                     <toolkit:SettingsCard
                         x:Name="CardAcrylicOpacity"

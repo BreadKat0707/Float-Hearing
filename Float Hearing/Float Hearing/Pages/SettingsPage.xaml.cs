@@ -2,6 +2,7 @@ using Float_Hearing.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Media;
 using Windows.Storage.Pickers;
 
 namespace Float_Hearing.Pages;
@@ -113,6 +114,7 @@ public sealed partial class SettingsPage : Page
             };
             SolidColorBox.Text = bg.SolidColor;
             AcrylicTintBox.Text = bg.AcrylicTintColor;
+            SyncAcrylicTintControls(bg.AcrylicTintColor);
             AcrylicOpacitySlider.Value = bg.AcrylicTintOpacity;
             AcrylicLumSlider.Value = bg.AcrylicLuminosity;
             ImageDimSlider.Value = bg.ImageDim;
@@ -206,6 +208,7 @@ public sealed partial class SettingsPage : Page
         }
 
         BackgroundService.Instance.AcrylicTintColor = AcrylicTintBox.Text;
+        SyncAcrylicTintControls(AcrylicTintBox.Text);
         if (BackgroundService.Instance.Mode == BackgroundMode.AcrylicCustom)
         {
             BackgroundService.Instance.NotifySettingsChanged();
@@ -214,6 +217,71 @@ public sealed partial class SettingsPage : Page
         {
             SettingsService.SaveCurrent();
         }
+    }
+
+    /// <summary>hex → ColorPicker + 色块（Loaded / 手输 hex 时调用）。</summary>
+    private void SyncAcrylicTintControls(string hex)
+    {
+        var color = ParseHexToColor(hex);
+        var wasSyncing = _syncing;
+        _syncing = true;
+        try
+        {
+            AcrylicTintPicker.Color = color;
+            AcrylicTintSwatchBorder.Background = new SolidColorBrush(color);
+        }
+        finally
+        {
+            _syncing = wasSyncing;
+        }
+    }
+
+    private void AcrylicTintPicker_ColorChanged(ColorPicker sender, ColorChangedEventArgs args)
+    {
+        if (_syncing)
+        {
+            return;
+        }
+
+        // ColorPicker 不带 alpha：写回 #RRGGBB（透明度仍由不透明度滑条控制）
+        var c = args.NewColor;
+        var hex = $"#{c.R:X2}{c.G:X2}{c.B:X2}";
+        if (string.Equals(AcrylicTintBox.Text, hex, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        AcrylicTintBox.Text = hex;
+        // TextChanged 里会更新服务 / 持久化 / 色块
+    }
+
+    private static Windows.UI.Color ParseHexToColor(string hex)
+    {
+        try
+        {
+            hex = hex.Trim();
+            if (hex.Length is 7 or 9 && hex[0] == '#')
+            {
+                byte a = 255;
+                var offset = 1;
+                if (hex.Length == 9)
+                {
+                    a = Convert.ToByte(hex.Substring(1, 2), 16);
+                    offset = 3;
+                }
+
+                var r = Convert.ToByte(hex.Substring(offset, 2), 16);
+                var g = Convert.ToByte(hex.Substring(offset + 2, 2), 16);
+                var b = Convert.ToByte(hex.Substring(offset + 4, 2), 16);
+                return Microsoft.UI.ColorHelper.FromArgb(a, r, g, b);
+            }
+        }
+        catch (Exception)
+        {
+            // 非法 hex → 白
+        }
+
+        return Microsoft.UI.Colors.White;
     }
 
     private void AcrylicOpacitySlider_ValueChanged(object sender, RangeBaseValueChangedEventArgs e)
